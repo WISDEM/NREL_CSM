@@ -1,0 +1,833 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4. Module Documentation &mdash; csm 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nrel.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="csm 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="5. Theory" href="theory.html" />
+    <link rel="prev" title="3. Tutorial" href="tutorial.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="theory.html" title="5. Theory"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tutorial.html" title="3. Tutorial"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">csm 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-documentation">
+<h1>4. Module Documentation<a class="headerlink" href="#module-documentation" title="Permalink to this headline">¶</a></h1>
+<p>To be done...</p>
+<div class="section" id="cost-and-scaling-model-utilities">
+<h2>4.1. Cost and Scaling Model Utilities<a class="headerlink" href="#cost-and-scaling-model-utilities" title="Permalink to this headline">¶</a></h2>
+<p>Cost escalators are used to adjust for input factor prices trends for materials and labor associated with turbine manufacturing, plant development and operation.</p>
+</div>
+<div class="section" id="turbine-capital-costs-tcc-module">
+<h2>4.2. Turbine Capital Costs (TCC) Module<a class="headerlink" href="#turbine-capital-costs-tcc-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-csm.src.csmTurbine"></span><p>The NREL Cost and Scaling Model turbine module calculates turbine component costs and masses (either onshore or offshore).  This excludes the foundation which is considered part of the balance of station even for offshore plants.</p>
+<div class="section" id="csmturbine">
+<h3>4.2.1. csmTurbine<a class="headerlink" href="#csmturbine" title="Permalink to this headline">¶</a></h3>
+<p>This class calculates the the component masses and costs for a wind turbine using the NREL Cost and Scaling Model.</p>
+<dl class="class">
+<dt id="csm.src.csmTurbine.csmTurbine">
+<em class="property">class </em><tt class="descclassname">csm.src.csmTurbine.</tt><tt class="descname">csmTurbine</tt><a class="headerlink" href="#csm.src.csmTurbine.csmTurbine" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmTurbine.csmTurbine.__init__.html#csm.src.csmTurbine.csmTurbine.__init__" title="csm.src.csmTurbine.csmTurbine.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td>Initialize properties for operations and maintenance costs.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmTurbine.csmTurbine.compute.html#csm.src.csmTurbine.csmTurbine.compute" title="csm.src.csmTurbine.csmTurbine.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>([hubHeight,&nbsp;machineRating,&nbsp;...])</td>
+<td>Computes the turbine component masses and costs using the NREL Cost and Scaling Model method.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmTurbine.csmTurbine.getMass.html#csm.src.csmTurbine.csmTurbine.getMass" title="csm.src.csmTurbine.csmTurbine.getMass"><tt class="xref py py-obj docutils literal"><span class="pre">getMass</span></tt></a>()</td>
+<td>Provides the overall turbine mass.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmTurbine.csmTurbine.getCost.html#csm.src.csmTurbine.csmTurbine.getCost" title="csm.src.csmTurbine.csmTurbine.getCost"><tt class="xref py py-obj docutils literal"><span class="pre">getCost</span></tt></a>()</td>
+<td>Provides the turbine capital costs for a single turbine.</td>
+</tr>
+</tbody>
+</table>
+<p>There are several sub-modules in the overall TCC module for each of the major sub-systems including the blades, hub, nacelle and tower.</p>
+</div>
+<div class="section" id="csmblades">
+<h3>4.2.2. csmBlades<a class="headerlink" href="#csmblades" title="Permalink to this headline">¶</a></h3>
+<p>This class calculates wind turbine blade mass and cost based on the NREL Cost and Scaling Model.</p>
+<dl class="class">
+<dt id="csm.src.csmBlades.csmBlades">
+<em class="property">class </em><tt class="descclassname">csm.src.csmBlades.</tt><tt class="descname">csmBlades</tt><a class="headerlink" href="#csm.src.csmBlades.csmBlades" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmBlades.csmBlades.__init__.html#csm.src.csmBlades.csmBlades.__init__" title="csm.src.csmBlades.csmBlades.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td>Initialize the parameters for the wind turbine blade</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmBlades.csmBlades.compute.html#csm.src.csmBlades.csmBlades.compute" title="csm.src.csmBlades.csmBlades.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>([diam,&nbsp;advanced,&nbsp;curr_yr,&nbsp;curr_mon,&nbsp;...])</td>
+<td>Compute mass and cost for a single wind turbine blade by calling computeMass and computeCost</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmBlades.csmBlades.computeMass.html#csm.src.csmBlades.csmBlades.computeMass" title="csm.src.csmBlades.csmBlades.computeMass"><tt class="xref py py-obj docutils literal"><span class="pre">computeMass</span></tt></a>(diam[,&nbsp;advanced])</td>
+<td>Compute mass for a single wind turbine blade using NREL cost and scaling model</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmBlades.csmBlades.computeCost.html#csm.src.csmBlades.csmBlades.computeCost" title="csm.src.csmBlades.csmBlades.computeCost"><tt class="xref py py-obj docutils literal"><span class="pre">computeCost</span></tt></a>(diam[,&nbsp;advanced,&nbsp;curr_yr,&nbsp;curr_mon])</td>
+<td>Compute cost for a single wind turbine blade using NREL cost and scaling model</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmBlades.csmBlades.getMass.html#csm.src.csmBlades.csmBlades.getMass" title="csm.src.csmBlades.csmBlades.getMass"><tt class="xref py py-obj docutils literal"><span class="pre">getMass</span></tt></a>()</td>
+<td>Provides the mass for the wind turbine blade.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmBlades.csmBlades.getCost.html#csm.src.csmBlades.csmBlades.getCost" title="csm.src.csmBlades.csmBlades.getCost"><tt class="xref py py-obj docutils literal"><span class="pre">getCost</span></tt></a>()</td>
+<td>Provides the cost for the wind turbine blade.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong></p>
+<p>The following is an example use of the individual csmBlades module.</p>
+<p>Output should be:</p>
+<p>Conventional blade design:
+Blades    276129.6 K$   25614.4 kg</p>
+<p>Advanced blade design:
+Blades    251227.0 K$   17650.7 kg</p>
+</div>
+<div class="section" id="csmhub">
+<h3>4.2.3. csmHub<a class="headerlink" href="#csmhub" title="Permalink to this headline">¶</a></h3>
+<p>This class calculates wind turbine hub system mass and cost based on the NREL Cost and Scaling Model.</p>
+<dl class="class">
+<dt id="csm.src.csmHub.csmHub">
+<em class="property">class </em><tt class="descclassname">csm.src.csmHub.</tt><tt class="descname">csmHub</tt><a class="headerlink" href="#csm.src.csmHub.csmHub" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmHub.csmHub.__init__.html#csm.src.csmHub.csmHub.__init__" title="csm.src.csmHub.csmHub.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td>Initialize the parameters for csm Hub</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmHub.csmHub.compute.html#csm.src.csmHub.csmHub.compute" title="csm.src.csmHub.csmHub.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>(blademass[,&nbsp;diam,&nbsp;nblades,&nbsp;curr_yr,&nbsp;...])</td>
+<td>Compute mass and cost for the hub system by calling computeMass and computeCost</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmHub.csmHub.computeMass.html#csm.src.csmHub.csmHub.computeMass" title="csm.src.csmHub.csmHub.computeMass"><tt class="xref py py-obj docutils literal"><span class="pre">computeMass</span></tt></a>(blademass[,&nbsp;diam,&nbsp;nblades])</td>
+<td>Compute mass for the hub system based on NREL Cost and Scaling Model</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmHub.csmHub.computeCost.html#csm.src.csmHub.csmHub.computeCost" title="csm.src.csmHub.csmHub.computeCost"><tt class="xref py py-obj docutils literal"><span class="pre">computeCost</span></tt></a>([diam,&nbsp;curr_yr,&nbsp;curr_mon,&nbsp;...])</td>
+<td>Compute cost for the hub system by the NREL Cost and Scaling Model</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmHub.csmHub.getMass.html#csm.src.csmHub.csmHub.getMass" title="csm.src.csmHub.csmHub.getMass"><tt class="xref py py-obj docutils literal"><span class="pre">getMass</span></tt></a>()</td>
+<td>Provides the overall hub system mass.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmHub.csmHub.getCost.html#csm.src.csmHub.csmHub.getCost" title="csm.src.csmHub.csmHub.getCost"><tt class="xref py py-obj docutils literal"><span class="pre">getCost</span></tt></a>()</td>
+<td>Provides the overall hub system cost.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmHub.csmHub.getHubComponentMasses.html#csm.src.csmHub.csmHub.getHubComponentMasses" title="csm.src.csmHub.csmHub.getHubComponentMasses"><tt class="xref py py-obj docutils literal"><span class="pre">getHubComponentMasses</span></tt></a>()</td>
+<td>Provides the detail on hub system component masses.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmHub.csmHub.getHubComponentCosts.html#csm.src.csmHub.csmHub.getHubComponentCosts" title="csm.src.csmHub.csmHub.getHubComponentCosts"><tt class="xref py py-obj docutils literal"><span class="pre">getHubComponentCosts</span></tt></a>()</td>
+<td>Provides the overall hub system cost.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong></p>
+<p>The following is an example use of the individual csmHub module.</p>
+<p>The output should be:</p>
+<dl class="docutils">
+<dt>Hub System Components:</dt>
+<dd>Hub     124903.9 K$  22519.7 kg
+Pitch Mech   24379.7 K$  10313.9 kg
+Nose Cone   10509.0 K$  1810.5 kg</dd>
+</dl>
+<p>Hub total   379152.6 K$  34644.2 kg</p>
+</div>
+<div class="section" id="csmnacelle">
+<h3>4.2.4. csmNacelle<a class="headerlink" href="#csmnacelle" title="Permalink to this headline">¶</a></h3>
+<p>This class calculates wind turbine hub system mass and cost based on the NREL Cost and Scaling Model.</p>
+<dl class="class">
+<dt id="csm.src.csmNacelle.csmNacelle">
+<em class="property">class </em><tt class="descclassname">csm.src.csmNacelle.</tt><tt class="descname">csmNacelle</tt><a class="headerlink" href="#csm.src.csmNacelle.csmNacelle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmNacelle.csmNacelle.__init__.html#csm.src.csmNacelle.csmNacelle.__init__" title="csm.src.csmNacelle.csmNacelle.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td>Initialize the parameters for the nacelle</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmNacelle.csmNacelle.compute.html#csm.src.csmNacelle.csmNacelle.compute" title="csm.src.csmNacelle.csmNacelle.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>(RotorDiam,&nbsp;MachineRating,&nbsp;RotorMass,&nbsp;...)</td>
+<td>Compute mass and cost for a full wind turbine Nacelle by calling computeMass and computeCost</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmNacelle.csmNacelle.computeMass.html#csm.src.csmNacelle.csmNacelle.computeMass" title="csm.src.csmNacelle.csmNacelle.computeMass"><tt class="xref py py-obj docutils literal"><span class="pre">computeMass</span></tt></a>(RotorDiam,&nbsp;MachineRating,&nbsp;...[,&nbsp;...])</td>
+<td>Compute mass for a full wind turbine Nacelle using the NREL Cost and Scaling Model</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmNacelle.csmNacelle.computeCost.html#csm.src.csmNacelle.csmNacelle.computeCost" title="csm.src.csmNacelle.csmNacelle.computeCost"><tt class="xref py py-obj docutils literal"><span class="pre">computeCost</span></tt></a>(RotorDiam,&nbsp;MachineRating,&nbsp;...[,&nbsp;...])</td>
+<td>Compute cost for a full wind turbine Nacelle using the NREL Cost and Scaling Model</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmNacelle.csmNacelle.getMass.html#csm.src.csmNacelle.csmNacelle.getMass" title="csm.src.csmNacelle.csmNacelle.getMass"><tt class="xref py py-obj docutils literal"><span class="pre">getMass</span></tt></a>()</td>
+<td>Provides the mass for the overall wind turbine nacelle assembly.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmNacelle.csmNacelle.getCost.html#csm.src.csmNacelle.csmNacelle.getCost" title="csm.src.csmNacelle.csmNacelle.getCost"><tt class="xref py py-obj docutils literal"><span class="pre">getCost</span></tt></a>()</td>
+<td>Provides the cost for the overall wind turbine nacelle assembly.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmNacelle.csmNacelle.getNacelleComponentMasses.html#csm.src.csmNacelle.csmNacelle.getNacelleComponentMasses" title="csm.src.csmNacelle.csmNacelle.getNacelleComponentMasses"><tt class="xref py py-obj docutils literal"><span class="pre">getNacelleComponentMasses</span></tt></a>()</td>
+<td>Provides the mass for the overall wind turbine nacelle components.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmNacelle.csmNacelle.getNacelleComponentCosts.html#csm.src.csmNacelle.csmNacelle.getNacelleComponentCosts" title="csm.src.csmNacelle.csmNacelle.getNacelleComponentCosts"><tt class="xref py py-obj docutils literal"><span class="pre">getNacelleComponentCosts</span></tt></a>()</td>
+<td>Provides the cost for the overall wind turbine nacelle components.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong></p>
+<p>The following is an example use of the individual csmNacelle module.</p>
+<p>Output should be:</p>
+<p>Nacelle Total  3249404.5229 K$  223315.6984 kg</p>
+<p>Within the nacelle, there are additional sub-modules for the low-speed shaft, the gearbox and the generator.</p>
+</div>
+<div class="section" id="lowspdshaft">
+<h3>4.2.5. LowSpdShaft<a class="headerlink" href="#lowspdshaft" title="Permalink to this headline">¶</a></h3>
+<p>This class calculates wind turbine low speed shaft mass and cost based on the NREL Cost and Scaling Model.</p>
+<dl class="class">
+<dt id="csm.src.csmNacelle.LowSpdShaft">
+<em class="property">class </em><tt class="descclassname">csm.src.csmNacelle.</tt><tt class="descname">LowSpdShaft</tt><a class="headerlink" href="#csm.src.csmNacelle.LowSpdShaft" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmNacelle.LowSpdShaft.__init__.html#csm.src.csmNacelle.LowSpdShaft.__init__" title="csm.src.csmNacelle.LowSpdShaft.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td>Initialize the parameters for low speed shaft</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmNacelle.LowSpdShaft.compute.html#csm.src.csmNacelle.LowSpdShaft.compute" title="csm.src.csmNacelle.LowSpdShaft.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>(RotorDiam,&nbsp;RotorMass,&nbsp;RotorTorque,&nbsp;...)</td>
+<td>Compute mass and cost for a low speed shaft by calling computeMass and computeCost</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmNacelle.LowSpdShaft.computeMass.html#csm.src.csmNacelle.LowSpdShaft.computeMass" title="csm.src.csmNacelle.LowSpdShaft.computeMass"><tt class="xref py py-obj docutils literal"><span class="pre">computeMass</span></tt></a>(RotorDiam,&nbsp;RotorMass,&nbsp;RotorTorque)</td>
+<td>Compute mass for a low speed shaft using the NREL Cost and Scaling Model</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmNacelle.LowSpdShaft.computeCost.html#csm.src.csmNacelle.LowSpdShaft.computeCost" title="csm.src.csmNacelle.LowSpdShaft.computeCost"><tt class="xref py py-obj docutils literal"><span class="pre">computeCost</span></tt></a>(RotorDiam,&nbsp;curr_yr,&nbsp;curr_mon)</td>
+<td>Compute cost for a low speed shaft using the NREL Cost and Scaling Model</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmNacelle.LowSpdShaft.getMass.html#csm.src.csmNacelle.LowSpdShaft.getMass" title="csm.src.csmNacelle.LowSpdShaft.getMass"><tt class="xref py py-obj docutils literal"><span class="pre">getMass</span></tt></a>()</td>
+<td>Provides the mass for the low speed shaft.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmNacelle.LowSpdShaft.getCost.html#csm.src.csmNacelle.LowSpdShaft.getCost" title="csm.src.csmNacelle.LowSpdShaft.getCost"><tt class="xref py py-obj docutils literal"><span class="pre">getCost</span></tt></a>()</td>
+<td>Provides the cost for the wind turbine low speed shaft.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="gearbox">
+<h3>4.2.6. GearBox<a class="headerlink" href="#gearbox" title="Permalink to this headline">¶</a></h3>
+<p>This class calculates wind turbine gearbox mass and cost based on the NREL Cost and Scaling Model.</p>
+<dl class="class">
+<dt id="csm.src.csmNacelle.GearBox">
+<em class="property">class </em><tt class="descclassname">csm.src.csmNacelle.</tt><tt class="descname">GearBox</tt><a class="headerlink" href="#csm.src.csmNacelle.GearBox" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmNacelle.GearBox.__init__.html#csm.src.csmNacelle.GearBox.__init__" title="csm.src.csmNacelle.GearBox.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td>Initialize the parameters for gearbox</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmNacelle.GearBox.compute.html#csm.src.csmNacelle.GearBox.compute" title="csm.src.csmNacelle.GearBox.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>(iDsgn,&nbsp;MachineRating,&nbsp;RotorTorque,&nbsp;...)</td>
+<td>Compute mass and cost for a gearbox by calling computeMass and computeCost</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmNacelle.GearBox.computeMass.html#csm.src.csmNacelle.GearBox.computeMass" title="csm.src.csmNacelle.GearBox.computeMass"><tt class="xref py py-obj docutils literal"><span class="pre">computeMass</span></tt></a>(iDsgn,&nbsp;RotorTorque)</td>
+<td>Compute mass for a gearbox using the cost and scaling model</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmNacelle.GearBox.computeCost.html#csm.src.csmNacelle.GearBox.computeCost" title="csm.src.csmNacelle.GearBox.computeCost"><tt class="xref py py-obj docutils literal"><span class="pre">computeCost</span></tt></a>(iDsgn,&nbsp;MachineRating,&nbsp;curr_yr,&nbsp;...)</td>
+<td>Compute cost for a gearbox using the NREL Cost and Scaling Model</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmNacelle.GearBox.getMass.html#csm.src.csmNacelle.GearBox.getMass" title="csm.src.csmNacelle.GearBox.getMass"><tt class="xref py py-obj docutils literal"><span class="pre">getMass</span></tt></a>()</td>
+<td>Provides the mass for the gearbox.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmNacelle.GearBox.getCost.html#csm.src.csmNacelle.GearBox.getCost" title="csm.src.csmNacelle.GearBox.getCost"><tt class="xref py py-obj docutils literal"><span class="pre">getCost</span></tt></a>()</td>
+<td>Provides the cost for the wind turbine gearbox.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="generator">
+<h3>4.2.7. Generator<a class="headerlink" href="#generator" title="Permalink to this headline">¶</a></h3>
+<p>This class calculates wind turbine generator mass and cost based on the NREL Cost and Scaling Model.</p>
+<dl class="class">
+<dt id="csm.src.csmNacelle.Generator">
+<em class="property">class </em><tt class="descclassname">csm.src.csmNacelle.</tt><tt class="descname">Generator</tt><a class="headerlink" href="#csm.src.csmNacelle.Generator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmNacelle.Generator.__init__.html#csm.src.csmNacelle.Generator.__init__" title="csm.src.csmNacelle.Generator.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td>Initialize the parameters for the generator</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmNacelle.Generator.compute.html#csm.src.csmNacelle.Generator.compute" title="csm.src.csmNacelle.Generator.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>(iDsgn,&nbsp;MachineRating,&nbsp;RotorTorque,&nbsp;...)</td>
+<td>Compute mass and cost for a generator by calling computeMass and computeCost</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmNacelle.Generator.computeMass.html#csm.src.csmNacelle.Generator.computeMass" title="csm.src.csmNacelle.Generator.computeMass"><tt class="xref py py-obj docutils literal"><span class="pre">computeMass</span></tt></a>(iDsgn,&nbsp;MachineRating,&nbsp;RotorTorque)</td>
+<td>Compute mass for a generator using the NREL Cost and Scaling Model</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmNacelle.Generator.computeCost.html#csm.src.csmNacelle.Generator.computeCost" title="csm.src.csmNacelle.Generator.computeCost"><tt class="xref py py-obj docutils literal"><span class="pre">computeCost</span></tt></a>(iDsgn,&nbsp;MachineRating,&nbsp;curr_yr,&nbsp;...)</td>
+<td>Compute mass and cost for a generator using the NREL Cost and Scaling Model</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmNacelle.Generator.getMass.html#csm.src.csmNacelle.Generator.getMass" title="csm.src.csmNacelle.Generator.getMass"><tt class="xref py py-obj docutils literal"><span class="pre">getMass</span></tt></a>()</td>
+<td>Provides the mass for the generator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmNacelle.Generator.getCost.html#csm.src.csmNacelle.Generator.getCost" title="csm.src.csmNacelle.Generator.getCost"><tt class="xref py py-obj docutils literal"><span class="pre">getCost</span></tt></a>()</td>
+<td>Provides the cost for the wind turbine generator.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="csmtower">
+<h3>4.2.8. csmTower<a class="headerlink" href="#csmtower" title="Permalink to this headline">¶</a></h3>
+<p>This class calculates wind turbine tower mass and cost based on the NREL Cost and Scaling Model.</p>
+<dl class="class">
+<dt id="csm.src.csmTower.csmTower">
+<em class="property">class </em><tt class="descclassname">csm.src.csmTower.</tt><tt class="descname">csmTower</tt><a class="headerlink" href="#csm.src.csmTower.csmTower" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmTower.csmTower.__init__.html#csm.src.csmTower.csmTower.__init__" title="csm.src.csmTower.csmTower.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td>Initialize the parameters for the wind turbine tower</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmTower.csmTower.compute.html#csm.src.csmTower.csmTower.compute" title="csm.src.csmTower.csmTower.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>(RotorDiam,&nbsp;HubHeight[,&nbsp;curr_yr,&nbsp;...])</td>
+<td>Compute mass and cost for a wind turbine tower by calling computeMass and computeCost</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmTower.csmTower.computeMass.html#csm.src.csmTower.csmTower.computeMass" title="csm.src.csmTower.csmTower.computeMass"><tt class="xref py py-obj docutils literal"><span class="pre">computeMass</span></tt></a>(RotorDiam,&nbsp;HubHeight)</td>
+<td>Compute mass for a wind turbine tower using the NREL Cost and Scaling Model</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmTower.csmTower.computeCost.html#csm.src.csmTower.csmTower.computeCost" title="csm.src.csmTower.csmTower.computeCost"><tt class="xref py py-obj docutils literal"><span class="pre">computeCost</span></tt></a>(curr_yr,&nbsp;curr_mon[,&nbsp;towerMass])</td>
+<td>Compute cost for a wind turbine tower by calling computeMass and computeCost</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmTower.csmTower.getMass.html#csm.src.csmTower.csmTower.getMass" title="csm.src.csmTower.csmTower.getMass"><tt class="xref py py-obj docutils literal"><span class="pre">getMass</span></tt></a>()</td>
+<td>Provides the mass for the wind turbine tower.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmTower.csmTower.getCost.html#csm.src.csmTower.csmTower.getCost" title="csm.src.csmTower.csmTower.getCost"><tt class="xref py py-obj docutils literal"><span class="pre">getCost</span></tt></a>()</td>
+<td>Provides the cost for the wind turbine tower.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong></p>
+<p>The following is an example use of the individual csmTower module.</p>
+<p>Output should be:</p>
+<p>Tower Mass: 444384.157764
+Tower Cost: 1009500.23594</p>
+<p><strong>Examples</strong>
+The following is an example use of the overall csmTurbine module for calculating the onshore and offshore wind turbine costs using the NREL 5 MW reference turbine <a href="#id12"><span class="problematic" id="id13"><span id="id1"></span>[1]_</span></a>:</p>
+<p>Output should be:</p>
+<p>Onshore configuration 5 MW turbine:
+Turbine total: 5487334.85 $K  774049.19 kg</p>
+<p>Offshore configuration 5 MW turbine:
+Turbine total: 6064385.11 $K  774049.19 kg</p>
+<p><strong>References</strong></p>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td>Jonkman, J.; Butterfield, S.; Musial, W.; Scott, G. (2009). &#8220;Definition of a 5-MW Reference Wind Turbine for Offshore System Development.&#8221; NREL/TP-500-38060. Golden, CO: National Renewable Energy Laboratory, 75 pp.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="balance-of-station-costs-bos-module">
+<h2>4.3. Balance of Station Costs (BOS) Module<a class="headerlink" href="#balance-of-station-costs-bos-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-csm.src.csmBOS"></span><p>The NREL Cost and Scaling Model balance of station module calculates the installation, assembly and other non-turbine capital costs associated with the development of a wind plant (either onshore or offshore).  The foundation is considered part of the balance of station even for offshore plants.</p>
+<div class="section" id="csmbos">
+<h3>4.3.1. csmBOS<a class="headerlink" href="#csmbos" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="csm.src.csmBOS.csmBOS">
+<em class="property">class </em><tt class="descclassname">csm.src.csmBOS.</tt><tt class="descname">csmBOS</tt><a class="headerlink" href="#csm.src.csmBOS.csmBOS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmBOS.csmBOS.__init__.html#csm.src.csmBOS.csmBOS.__init__" title="csm.src.csmBOS.csmBOS.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td>Initialize properties for balance of plant costs including default inputs</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmBOS.csmBOS.compute.html#csm.src.csmBOS.csmBOS.compute" title="csm.src.csmBOS.csmBOS.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>(seaDepth,&nbsp;machineRating,&nbsp;hubHt,&nbsp;...)</td>
+<td>Computes the balance of station costs for a wind plant using the NREL Cost and Scaling Model method.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmBOS.csmBOS.getCost.html#csm.src.csmBOS.csmBOS.getCost" title="csm.src.csmBOS.csmBOS.getCost"><tt class="xref py py-obj docutils literal"><span class="pre">getCost</span></tt></a>()</td>
+<td>Provides the overall balance of station costs for the plant.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmBOS.csmBOS.getDetailedCosts.html#csm.src.csmBOS.csmBOS.getDetailedCosts" title="csm.src.csmBOS.csmBOS.getDetailedCosts"><tt class="xref py py-obj docutils literal"><span class="pre">getDetailedCosts</span></tt></a>()</td>
+<td>Provides the detailed balance of station costs for the plant.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="module-csm.src.csmFoundation">
+<span id="csmfoundation"></span><h3>4.3.2. csmFoundation<a class="headerlink" href="#module-csm.src.csmFoundation" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="csm.src.csmFoundation.csmFoundation">
+<em class="property">class </em><tt class="descclassname">csm.src.csmFoundation.</tt><tt class="descname">csmFoundation</tt><a class="headerlink" href="#csm.src.csmFoundation.csmFoundation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmFoundation.csmFoundation.__init__.html#csm.src.csmFoundation.csmFoundation.__init__" title="csm.src.csmFoundation.csmFoundation.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td>Initialize properties for balance of plant foundation cost.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmFoundation.csmFoundation.compute.html#csm.src.csmFoundation.csmFoundation.compute" title="csm.src.csmFoundation.csmFoundation.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>(MachineRating,&nbsp;HubHt,&nbsp;RotorDiam,&nbsp;...)</td>
+<td>Computes the balance of station foundation costs for a wind plant using the NREL Cost and Scaling Model method.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmFoundation.csmFoundation.getCost.html#csm.src.csmFoundation.csmFoundation.getCost" title="csm.src.csmFoundation.csmFoundation.getCost"><tt class="xref py py-obj docutils literal"><span class="pre">getCost</span></tt></a>()</td>
+<td>Provides the overall balance of station costs for the plant.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples</strong>
+The following is an example use of csmBOS for calculating the onshore and offshore wind plant Balance of Station Costs using the NREL 5 MW reference turbine <a href="#id14"><span class="problematic" id="id15"><span id="id3"></span>[1]_</span></a>:</p>
+<p>The output should appear as:
+BOS cost onshore: 3084560.970
+BOS cost offshore: 7613488.697</p>
+<p>The following is an example use of csmBOS for calculating the onshore and offshore wind plant Balance of Station Foundation Costs using the NREL 5 MW reference turbine <a href="#id16"><span class="problematic" id="id17"><span id="id4"></span>[1]_</span></a>:</p>
+<p>Onshore foundation cost:
+Foundation cost: 120779.05392
+Offshore foundation cost:
+Foundation cost: 2125550.66079</p>
+<p><strong>References</strong></p>
+<table class="docutils footnote" frame="void" id="id5" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td>Jonkman, J.; Butterfield, S.; Musial, W.; Scott, G. (2009). &#8220;Definition of a 5-MW Reference Wind Turbine for Offshore System Development.&#8221; NREL/TP-500-38060. Golden, CO: National Renewable Energy Laboratory, 75 pp.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="operations-and-maintenance-o-m-module">
+<h2>4.4. Operations and Maintenance (O&amp;M) Module<a class="headerlink" href="#operations-and-maintenance-o-m-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-csm.src.csmOM"></span><p>The NREL Cost and Scaling Model operations and maintenance module calculates the operations and maintenance, land lease costs, levelized replacement costs for operating a wind plant (either onshore or offshore).</p>
+<div class="section" id="csmom">
+<h3>4.4.1. csmOM<a class="headerlink" href="#csmom" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="csm.src.csmOM.csmOM">
+<em class="property">class </em><tt class="descclassname">csm.src.csmOM.</tt><tt class="descname">csmOM</tt><a class="headerlink" href="#csm.src.csmOM.csmOM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmOM.csmOM.__init__.html#csm.src.csmOM.csmOM.__init__" title="csm.src.csmOM.csmOM.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td>Initialize properties for operations and maintenance costs.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmOM.csmOM.compute.html#csm.src.csmOM.csmOM.compute" title="csm.src.csmOM.csmOM.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>(aep,&nbsp;seaDepth,&nbsp;machineRating,&nbsp;year,&nbsp;...)</td>
+<td>Computes the operations and maintenance costs for a wind plant using the NREL Cost and Scaling Model method.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmOM.csmOM.getOMCost.html#csm.src.csmOM.csmOM.getOMCost" title="csm.src.csmOM.csmOM.getOMCost"><tt class="xref py py-obj docutils literal"><span class="pre">getOMCost</span></tt></a>()</td>
+<td>Provides the operations and maintenance costs for the plant.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmOM.csmOM.getLLC.html#csm.src.csmOM.csmOM.getLLC" title="csm.src.csmOM.csmOM.getLLC"><tt class="xref py py-obj docutils literal"><span class="pre">getLLC</span></tt></a>()</td>
+<td>Provides the land lease costs costs for the plant.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmOM.csmOM.getLRC.html#csm.src.csmOM.csmOM.getLRC" title="csm.src.csmOM.csmOM.getLRC"><tt class="xref py py-obj docutils literal"><span class="pre">getLRC</span></tt></a>()</td>
+<td>Provides the levelized replacement costs costs for the plant.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples</strong>
+The following is an example use of csmOM for calculating the onshore and offshore wind plant Operations and Maintenance Costs:</p>
+<p>Output should be:</p>
+<p>OM costs onshore 144053.487 LevRep 58699.223 Lease 22225.395</p>
+<p>OM costs offshore 401819.023  LevRep 91048.387 Lease 22225.395</p>
+</div>
+</div>
+<div class="section" id="annual-energy-production-aep">
+<h2>4.5. Annual Energy Production (AEP)<a class="headerlink" href="#annual-energy-production-aep" title="Permalink to this headline">¶</a></h2>
+<p>The annual energy production model uses methods as described in the references for determining a wind plant annual energy production from a small number of site and turbine design input parameters.  Within the AEP module are sub-modules for determining the wind turbine power curve and drivetrain efficiency.</p>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+<div class="section" id="module-csm.src.csmAEP">
+<span id="csmaep"></span><h3>4.5.1. csmAEP<a class="headerlink" href="#module-csm.src.csmAEP" title="Permalink to this headline">¶</a></h3>
+<p>The NREL Cost and Scaling Model AEP calculation based on a Weibull distribution of wind speed and input assumptions regarding plant losses.</p>
+<dl class="class">
+<dt id="csm.src.csmAEP.csmAEP">
+<em class="property">class </em><tt class="descclassname">csm.src.csmAEP.</tt><tt class="descname">csmAEP</tt><a class="headerlink" href="#csm.src.csmAEP.csmAEP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmAEP.csmAEP.__init__.html#csm.src.csmAEP.csmAEP.__init__" title="csm.src.csmAEP.csmAEP.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmAEP.csmAEP.compute.html#csm.src.csmAEP.csmAEP.compute" title="csm.src.csmAEP.csmAEP.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>(powercurve[,&nbsp;ratedPower,&nbsp;hubHt,&nbsp;...])</td>
+<td>Computes annual energy production from a wind plant</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmAEP.csmAEP.getAEP.html#csm.src.csmAEP.csmAEP.getAEP" title="csm.src.csmAEP.csmAEP.getAEP"><tt class="xref py py-obj docutils literal"><span class="pre">getAEP</span></tt></a>()</td>
+<td>Returns annual energy production for the project.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmAEP.csmAEP.getCapacityFactor.html#csm.src.csmAEP.csmAEP.getCapacityFactor" title="csm.src.csmAEP.csmAEP.getCapacityFactor"><tt class="xref py py-obj docutils literal"><span class="pre">getCapacityFactor</span></tt></a>()</td>
+<td>Returns project capacity factor.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong>
+The following is an example use of csmAEP to calculate the annual energy production for a fictitious plant using the NREL 5 MW Reference Turbine <a href="#id18"><span class="problematic" id="id19"><span id="id6"></span>[1]_</span></a>:</p>
+<p>The output should appear as:
+AEP:        18744306.322 MWh (for Rated Power: 5000.0)
+CapFactor:      42.795 %</p>
+<p><strong>References</strong></p>
+<table class="docutils footnote" frame="void" id="id7" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td>Jonkman, J.; Butterfield, S.; Musial, W.; Scott, G. (2009). &#8220;Definition of a 5-MW Reference Wind Turbine for Offshore System Development.&#8221; NREL/TP-500-38060. Golden, CO: National Renewable Energy Laboratory, 75 pp.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="csmpowercurve-module">
+<h2>4.6. csmPowerCurve Module<a class="headerlink" href="#csmpowercurve-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-csm.src.csmPowerCurve"></span><p>This module determines a wind turbine power curve which accounts for drivetrain efficiency.  It is based on the NREL Cost and Scaling Model and requires a small number of input parameters as described below.</p>
+<div class="section" id="csmpowercurve">
+<h3>4.6.1. csmPowerCurve<a class="headerlink" href="#csmpowercurve" title="Permalink to this headline">¶</a></h3>
+<p>The NREL Cost and Scaling Model Power Curve module.</p>
+<dl class="class">
+<dt id="csm.src.csmPowerCurve.csmPowerCurve">
+<em class="property">class </em><tt class="descclassname">csm.src.csmPowerCurve.</tt><tt class="descname">csmPowerCurve</tt><a class="headerlink" href="#csm.src.csmPowerCurve.csmPowerCurve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmPowerCurve.csmPowerCurve.__init__.html#csm.src.csmPowerCurve.csmPowerCurve.__init__" title="csm.src.csmPowerCurve.csmPowerCurve.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td>Initialize properties for power curve</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmPowerCurve.csmPowerCurve.compute.html#csm.src.csmPowerCurve.csmPowerCurve.compute" title="csm.src.csmPowerCurve.csmPowerCurve.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>(drivetrain[,&nbsp;hubHt,&nbsp;ratedPower,&nbsp;...])</td>
+<td>Computes the ideal power curve for a turbine after drivetrain losses using the NREL Cost and Scaling Model method.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmPowerCurve.csmPowerCurve.getRatedWindSpeed.html#csm.src.csmPowerCurve.csmPowerCurve.getRatedWindSpeed" title="csm.src.csmPowerCurve.csmPowerCurve.getRatedWindSpeed"><tt class="xref py py-obj docutils literal"><span class="pre">getRatedWindSpeed</span></tt></a>()</td>
+<td>Provides the minimum wind speed required for a turbine to operate at rated power after drivetrain losses are deducted.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmPowerCurve.csmPowerCurve.getRatedRotorSpeed.html#csm.src.csmPowerCurve.csmPowerCurve.getRatedRotorSpeed" title="csm.src.csmPowerCurve.csmPowerCurve.getRatedRotorSpeed"><tt class="xref py py-obj docutils literal"><span class="pre">getRatedRotorSpeed</span></tt></a>()</td>
+<td>Provides the rotor speed for a tubrine operating at rated power after drivetrain losses are deducted.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmPowerCurve.csmPowerCurve.getMaxEfficiency.html#csm.src.csmPowerCurve.csmPowerCurve.getMaxEfficiency" title="csm.src.csmPowerCurve.csmPowerCurve.getMaxEfficiency"><tt class="xref py py-obj docutils literal"><span class="pre">getMaxEfficiency</span></tt></a>()</td>
+<td>Provides the maximum drivetrain efficiency for a power curve.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmPowerCurve.csmPowerCurve.getPowerCurve.html#csm.src.csmPowerCurve.csmPowerCurve.getPowerCurve" title="csm.src.csmPowerCurve.csmPowerCurve.getPowerCurve"><tt class="xref py py-obj docutils literal"><span class="pre">getPowerCurve</span></tt></a>()</td>
+<td>Gives an array of power output as a function of input wind speed for a wind turbine accounting for drivetrain losses.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmPowerCurve.csmPowerCurve.idealPowerCurve.html#csm.src.csmPowerCurve.csmPowerCurve.idealPowerCurve" title="csm.src.csmPowerCurve.csmPowerCurve.idealPowerCurve"><tt class="xref py py-obj docutils literal"><span class="pre">idealPowerCurve</span></tt></a>(Wind,&nbsp;ITP,&nbsp;kTorque,&nbsp;...)</td>
+<td>Determine the ITP (idealized turbine power) array</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong>
+The following is an example use of csmPowerCurve to the a power curve based on the NREL 5 MW Reference Turbine <a href="#id20"><span class="problematic" id="id21"><span id="id8"></span>[1]_</span></a>:</p>
+<p>The output should appear as:
+Rated Speed: 11.750 mps
+Rated RPM:   12.126 rpm</p>
+<p>Along with the below plot.</p>
+<p><strong>References</strong></p>
+<table class="docutils footnote" frame="void" id="id9" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td>Jonkman, J.; Butterfield, S.; Musial, W.; Scott, G. (2009). &#8220;Definition of a 5-MW Reference Wind Turbine for Offshore System Development.&#8221; NREL/TP-500-38060. Golden, CO: National Renewable Energy Laboratory, 75 pp.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="drivetrain-efficiency-module">
+<h2>4.7. Drivetrain Efficiency Module<a class="headerlink" href="#drivetrain-efficiency-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-csm.src.csmDriveEfficiency"></span><p>This module describes an interface for drivetrain efficiency analysis as well as a model based on the NREL Cost and Scaling Model which implements the interface. The methods are necessary to determine the actual output power of a wind turbine to the interconnection point after drivetrain losses for the drivetrain (gearbox, generator, etc) are taken into account.  The simplified model is based on the analysis done in reference <a href="#id22"><span class="problematic" id="id23"><span id="id10"></span>[1]_</span></a>.</p>
+<div class="section" id="drivetrainefficiencymodel">
+<h3>4.7.1. DrivetrainEfficiencyModel<a class="headerlink" href="#drivetrainefficiencymodel" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="csm.src.csmDriveEfficiency.DrivetrainEfficiencyModel">
+<em class="property">class </em><tt class="descclassname">csm.src.csmDriveEfficiency.</tt><tt class="descname">DrivetrainEfficiencyModel</tt><a class="headerlink" href="#csm.src.csmDriveEfficiency.DrivetrainEfficiencyModel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmDriveEfficiency.DrivetrainEfficiencyModel.getMaxEfficiency.html#csm.src.csmDriveEfficiency.DrivetrainEfficiencyModel.getMaxEfficiency" title="csm.src.csmDriveEfficiency.DrivetrainEfficiencyModel.getMaxEfficiency"><tt class="xref py py-obj docutils literal"><span class="pre">getMaxEfficiency</span></tt></a>()</td>
+<td>Return maximum efficiency of the generator</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmDriveEfficiency.DrivetrainEfficiencyModel.getDrivetrainEfficiency.html#csm.src.csmDriveEfficiency.DrivetrainEfficiencyModel.getDrivetrainEfficiency" title="csm.src.csmDriveEfficiency.DrivetrainEfficiencyModel.getDrivetrainEfficiency"><tt class="xref py py-obj docutils literal"><span class="pre">getDrivetrainEfficiency</span></tt></a>(outputPower,&nbsp;...)</td>
+<td>Returns efficiency of drivetrain operating at a ratio of outputPower to ratedHubPower</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="csmdrivetrainmodel">
+<h3>4.7.2. csmDrivetrainModel<a class="headerlink" href="#csmdrivetrainmodel" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="csm.src.csmDriveEfficiency.csmDriveEfficiency">
+<em class="property">class </em><tt class="descclassname">csm.src.csmDriveEfficiency.</tt><tt class="descname">csmDriveEfficiency</tt><a class="headerlink" href="#csm.src.csmDriveEfficiency.csmDriveEfficiency" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmDriveEfficiency.csmDriveEfficiency.__init__.html#csm.src.csmDriveEfficiency.csmDriveEfficiency.__init__" title="csm.src.csmDriveEfficiency.csmDriveEfficiency.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>(drivetrainDesign)</td>
+<td>Set efficiency calculation coefficients based on drivetrain configuration type.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmDriveEfficiency.csmDriveEfficiency.getMaxEfficiency.html#csm.src.csmDriveEfficiency.csmDriveEfficiency.getMaxEfficiency" title="csm.src.csmDriveEfficiency.csmDriveEfficiency.getMaxEfficiency"><tt class="xref py py-obj docutils literal"><span class="pre">getMaxEfficiency</span></tt></a>()</td>
+<td>Uses quadratic formula to calculate maximum drivetrain efficiency with coefficients based on drivetrain configuration.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmDriveEfficiency.csmDriveEfficiency.getDrivetrainEfficiency.html#csm.src.csmDriveEfficiency.csmDriveEfficiency.getDrivetrainEfficiency" title="csm.src.csmDriveEfficiency.csmDriveEfficiency.getDrivetrainEfficiency"><tt class="xref py py-obj docutils literal"><span class="pre">getDrivetrainEfficiency</span></tt></a>(outputPower,&nbsp;...)</td>
+<td>Uses quadratic formula to calculate drivetrain efficiency with coefficients based on drivetrain configuraiton.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong>
+The following is an example use of csmDriveEfficiency to determine the maximum drivetrain efficiency for a wind turbine with a 3-staged gearbox and induction generator drivetrain configuration:</p>
+<p>The output should appear as:
+Max Efficiency:    0.902
+Output power:  3422.000   Rated power:   5543.000    Efficiency:  0.894</p>
+<p><strong>References</strong></p>
+<table class="docutils footnote" frame="void" id="id11" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td>Maples, B.; Hand, M.; Musial, W. (2010). &#8220;Comparative Assessment of Direct Drive High Temperature Superconducting Generators in Multi-Megawatt Class Wind Turbines.&#8221; NREL/TP-5000-49086. Golden, CO: National Renewable Energy Laboratory, 40 pp.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="finance">
+<h2>4.8. Finance<a class="headerlink" href="#finance" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-csm.src.csmFinance"></span><p>This module uses the NREL Cost and Scaling Model to determine a wind plant project?s cost of energy and levelized cost of energy.  It takes as input all the aggregate costs and financial parameters for the project.</p>
+<div class="section" id="csmfinance">
+<h3>4.8.1. csmFinance<a class="headerlink" href="#csmfinance" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="csm.src.csmFinance.csmFinance">
+<em class="property">class </em><tt class="descclassname">csm.src.csmFinance.</tt><tt class="descname">csmFinance</tt><a class="headerlink" href="#csm.src.csmFinance.csmFinance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Methods</strong></p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmFinance.csmFinance.__init__.html#csm.src.csmFinance.csmFinance.__init__" title="csm.src.csmFinance.csmFinance.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>()</td>
+<td>Initialize properties for csmFinance</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmFinance.csmFinance.compute.html#csm.src.csmFinance.csmFinance.compute" title="csm.src.csmFinance.csmFinance.compute"><tt class="xref py py-obj docutils literal"><span class="pre">compute</span></tt></a>(ratedpwr,&nbsp;tcc,&nbsp;om,&nbsp;llc,&nbsp;lrc,&nbsp;bos,&nbsp;...)</td>
+<td>Computes a wind plant cost of energy and levelized cost of energy using the NREL Cost and Scaling Model method.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/csm.src.csmFinance.csmFinance.getCOE.html#csm.src.csmFinance.csmFinance.getCOE" title="csm.src.csmFinance.csmFinance.getCOE"><tt class="xref py py-obj docutils literal"><span class="pre">getCOE</span></tt></a>()</td>
+<td>Returns the wind plant cost of energy</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/csm.src.csmFinance.csmFinance.getLCOE.html#csm.src.csmFinance.csmFinance.getLCOE" title="csm.src.csmFinance.csmFinance.getLCOE"><tt class="xref py py-obj docutils literal"><span class="pre">getLCOE</span></tt></a>()</td>
+<td>Returns the wind plant levelized cost of energy</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong>
+The following is an example use of csmDriveEfficiency to determine the maximum drivetrain efficiency for a wind turbine with a 3-staged gearbox and induction generator drivetrain configuration:</p>
+<p>The output should appear as:
+Onshore:
+LCOE: 0.052776
+COE: 0.065765</p>
+<p>Offshore:
+LCOE: 0.102919
+COE: 0.119694</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4. Module Documentation</a><ul>
+<li><a class="reference internal" href="#cost-and-scaling-model-utilities">4.1. Cost and Scaling Model Utilities</a></li>
+<li><a class="reference internal" href="#turbine-capital-costs-tcc-module">4.2. Turbine Capital Costs (TCC) Module</a><ul>
+<li><a class="reference internal" href="#csmturbine">4.2.1. csmTurbine</a></li>
+<li><a class="reference internal" href="#csmblades">4.2.2. csmBlades</a></li>
+<li><a class="reference internal" href="#csmhub">4.2.3. csmHub</a></li>
+<li><a class="reference internal" href="#csmnacelle">4.2.4. csmNacelle</a></li>
+<li><a class="reference internal" href="#lowspdshaft">4.2.5. LowSpdShaft</a></li>
+<li><a class="reference internal" href="#gearbox">4.2.6. GearBox</a></li>
+<li><a class="reference internal" href="#generator">4.2.7. Generator</a></li>
+<li><a class="reference internal" href="#csmtower">4.2.8. csmTower</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#balance-of-station-costs-bos-module">4.3. Balance of Station Costs (BOS) Module</a><ul>
+<li><a class="reference internal" href="#csmbos">4.3.1. csmBOS</a></li>
+<li><a class="reference internal" href="#module-csm.src.csmFoundation">4.3.2. csmFoundation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#operations-and-maintenance-o-m-module">4.4. Operations and Maintenance (O&amp;M) Module</a><ul>
+<li><a class="reference internal" href="#csmom">4.4.1. csmOM</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#annual-energy-production-aep">4.5. Annual Energy Production (AEP)</a><ul>
+<li><a class="reference internal" href="#module-csm.src.csmAEP">4.5.1. csmAEP</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#csmpowercurve-module">4.6. csmPowerCurve Module</a><ul>
+<li><a class="reference internal" href="#csmpowercurve">4.6.1. csmPowerCurve</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#drivetrain-efficiency-module">4.7. Drivetrain Efficiency Module</a><ul>
+<li><a class="reference internal" href="#drivetrainefficiencymodel">4.7.1. DrivetrainEfficiencyModel</a></li>
+<li><a class="reference internal" href="#csmdrivetrainmodel">4.7.2. csmDrivetrainModel</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#finance">4.8. Finance</a><ul>
+<li><a class="reference internal" href="#csmfinance">4.8.1. csmFinance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="tutorial.html"
+                        title="previous chapter">3. Tutorial</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="theory.html"
+                        title="next chapter">5. Theory</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/documentation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="theory.html" title="5. Theory"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tutorial.html" title="3. Tutorial"
+             >previous</a> |</li>
+        <li><a href="index.html">csm 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, NREL.
+      Last updated on Jun 19, 2013.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

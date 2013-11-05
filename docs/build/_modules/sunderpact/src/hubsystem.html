@@ -1,0 +1,560 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sunderpact.src.hubsystem &mdash; csm 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nrel.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="csm 0.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../index.html">csm 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for sunderpact.src.hubsystem</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">hubsystem.py</span>
+
+<span class="sd">Created by Katherine Dykes 2012.</span>
+<span class="sd">Copyright (c) NREL. All rights reserved.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">SubComponent</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">zope.interface</span> <span class="kn">import</span> <span class="n">implements</span>
+
+<span class="c">#-------------------------------------------------------------------------------</span>
+
+<span class="k">class</span> <span class="nc">Hub</span><span class="p">():</span> 
+    <span class="n">implements</span><span class="p">(</span><span class="n">SubComponent</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39; Hub class    </span>
+<span class="sd">          The Hub class is used to represent the hub component of a wind turbine. </span>
+<span class="sd">          It contains the general properties for a wind turbine component as well as additional design load and dimentional attributes as listed below.</span>
+<span class="sd">          It contains an update method to determine the mass, mass properties, and dimensions of the component.            </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="Hub.__init__"><a class="viewcode-back" href="../../../generated/sunderpact.src.hubsystem.Hub.__init__.html#sunderpact.src.hubsystem.Hub.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">RatedWindSpeed</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">RootMoment</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">AirDensity</span><span class="o">=</span><span class="mf">1.225</span><span class="p">,</span> <span class="n">Solidity</span><span class="o">=</span><span class="mf">0.065</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">        Initializes hub component </span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          The wind turbine rotor diameter [m]</span>
+<span class="sd">        BladeMass : float</span>
+<span class="sd">          The wind turbine individual blade mass [kg]</span>
+<span class="sd">        BladeNum : int</span>
+<span class="sd">          Number of wind turbine rotor blades</span>
+<span class="sd">        hubDiam : float</span>
+<span class="sd">          the specified hub diameter (if == 0, then it is set within compute method) [m]</span>
+<span class="sd">        RatedWindSpeed : float</span>
+<span class="sd">          wind speed for rated power (default == 12 if not provided) [m/s]</span>
+<span class="sd">        RootMoment : float</span>
+<span class="sd">          maximum flap-wise root moment for the blade (if == 0, then it is set within compute method) [Nm]</span>
+<span class="sd">        AirDensity : float</span>
+<span class="sd">          air density at hub height (default == 1.225 kg / m^3 if not provided) [kg / m^3]</span>
+<span class="sd">        Solidity : float</span>
+<span class="sd">          solidity of the rotor (default == 0.065 if not provided)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_mass</span><span class="p">(</span><span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">,</span> <span class="n">RatedWindSpeed</span><span class="p">,</span> <span class="n">RootMoment</span><span class="p">,</span> <span class="n">AirDensity</span><span class="p">,</span> <span class="n">Solidity</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Hub.update_mass"><a class="viewcode-back" href="../../../generated/sunderpact.src.hubsystem.Hub.update_mass.html#sunderpact.src.hubsystem.Hub.update_mass">[docs]</a>    <span class="k">def</span> <span class="nf">update_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">RatedWindSpeed</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">RootMoment</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">AirDensity</span><span class="o">=</span><span class="mf">1.225</span><span class="p">,</span> <span class="n">Solidity</span><span class="o">=</span><span class="mf">0.065</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Computes the dimensions, mass, and mass properiteis for the wind turbine hub component.</span>
+<span class="sd">        </span>
+<span class="sd">        The compute method determines and sets the attributes for the hub system based on the inputs described in the parameter section below. </span>
+<span class="sd">        The mass is calculated based input loads according to the University of Sunderland model [1] and the dimensions are calculated based on the NREL WindPACT rotor studies [2].</span>
+<span class="sd">     </span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          The wind turbine rotor diameter [m]</span>
+<span class="sd">        BladeMass : float</span>
+<span class="sd">          The wind turbine individual blade mass [kg]</span>
+<span class="sd">        BladeNum : int</span>
+<span class="sd">          Number of wind turbine rotor blades</span>
+<span class="sd">        hubDiam : float</span>
+<span class="sd">          the specified hub diameter (if == 0, then it is set within compute method) [m]</span>
+<span class="sd">        RatedWindSpeed : float</span>
+<span class="sd">          wind speed for rated power (default == 12 if not provided) [m/s]</span>
+<span class="sd">        RootMoment : float</span>
+<span class="sd">          maximum flap-wise root moment for the blade (if == 0, then it is set within compute method) [Nm]</span>
+<span class="sd">        AirDensity : float</span>
+<span class="sd">          air density at hub height (default == 1.225 kg / m^3 if not provided) [kg / m^3]</span>
+<span class="sd">        Solidity : float</span>
+<span class="sd">          solidity of the rotor (default == 0.065 if not provided)</span>
+<span class="sd">          </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c"># Sunderland method for calculating hub, pitch and spinner cone masses</span>
+        <span class="n">hubloadFact</span>      <span class="o">=</span> <span class="mi">1</span>                                     <span class="c"># default is 3 blade rigid hub (should depend on hub type)</span>
+        <span class="n">hubgeomFact</span>      <span class="o">=</span> <span class="mi">1</span>                                     <span class="c"># default is 3 blade (should depend on blade number)</span>
+        <span class="n">hubcontFact</span>      <span class="o">=</span> <span class="mf">1.5</span>                                   <span class="c"># default is 1.5 for full span pitch control (should depend on control method)</span>
+        <span class="n">hubmatldensity</span>   <span class="o">=</span> <span class="mf">7860.0</span>                               <span class="c"># density of hub material (kg / m^3) - assuming BS1503-622 (same material as LSS)</span>
+        <span class="n">hubmatlstress</span>    <span class="o">=</span> <span class="mf">371000000.0</span>                                <span class="c"># allowable stress of hub material (N / m^2)</span>
+
+        <span class="k">if</span> <span class="n">RootMoment</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">RootMoment</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.06</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">)</span> <span class="o">*</span> <span class="n">AirDensity</span> <span class="o">*</span> <span class="p">(</span><span class="n">RatedWindSpeed</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Solidity</span> <span class="o">*</span> <span class="p">(</span><span class="n">RotorDiam</span> <span class="o">**</span> <span class="mi">3</span><span class="p">))</span> <span class="o">/</span> <span class="n">BladeNum</span>
+                                                            <span class="c"># simplified equation for blade root moment (Sunderland model) if one is not provided</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span><span class="mi">50</span> <span class="o">*</span> <span class="n">hubgeomFact</span> <span class="o">*</span> <span class="n">hubloadFact</span> <span class="o">*</span> <span class="n">hubcontFact</span> <span class="o">*</span> <span class="n">BladeNum</span> <span class="o">*</span> <span class="n">RootMoment</span> <span class="o">*</span> <span class="p">(</span><span class="n">hubmatldensity</span> <span class="o">/</span> <span class="n">hubmatlstress</span><span class="p">)</span>
+                                                            <span class="c"># mass of hub based on Sunderland model</span>
+                                                            <span class="c"># 31.4 adapted to 50 to fit 5 MW data</span>
+
+        <span class="c"># calculate mass properties</span>
+        <span class="k">if</span> <span class="n">hubDiam</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span><span class="p">(</span><span class="mf">3.30</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span><span class="p">(</span><span class="n">hubDiam</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.055</span> <span class="o">/</span> <span class="mf">3.30</span><span class="p">)</span>         <span class="c"># 0.055 for 1.5 MW outer diameter of 3.3 - using proportional constant</span>
+
+        <span class="n">cm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">])</span>
+        <span class="n">cm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>     <span class="o">=</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="n">RotorDiam</span><span class="p">)</span>
+        <span class="n">cm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>     <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">cm</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>     <span class="o">=</span> <span class="mf">0.025</span> <span class="o">*</span> <span class="n">RotorDiam</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cm</span> <span class="o">=</span> <span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+
+        <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+        <span class="n">I</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">5</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">)</span> <span class="o">**</span> <span class="mi">5</span><span class="p">)</span> <span class="o">/</span> \
+               <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">)</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">I</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">I</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">I</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">I</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">I</span> <span class="o">=</span> <span class="p">(</span><span class="n">I</span><span class="p">)</span>
+
+<span class="c">#-------------------------------------------------------------------------------</span>
+</div>
+<span class="k">class</span> <span class="nc">PitchSystem</span><span class="p">():</span> 
+    <span class="n">implements</span><span class="p">(</span><span class="n">SubComponent</span><span class="p">)</span> 
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">     PitchSystem class          </span>
+<span class="sd">      The PitchSystem class is used to represent the pitch system of a wind turbine. </span>
+<span class="sd">      It contains the general properties for a wind turbine component as well as additional design load and dimentional attributes as listed below.</span>
+<span class="sd">      It contains an update method to determine the mass, mass properties, and dimensions of the component.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="PitchSystem.__init__"><a class="viewcode-back" href="../../../generated/sunderpact.src.hubsystem.PitchSystem.__init__.html#sunderpact.src.hubsystem.PitchSystem.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">RatedWindSpeed</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">RootMoment</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">AirDensity</span><span class="o">=</span><span class="mf">1.225</span><span class="p">,</span> <span class="n">Solidity</span><span class="o">=</span><span class="mf">0.065</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">        Initializes pitch system</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          The wind turbine rotor diameter [m]</span>
+<span class="sd">        BladeMass : float</span>
+<span class="sd">          The wind turbine individual blade mass [kg]</span>
+<span class="sd">        BladeNum : int</span>
+<span class="sd">          Number of wind turbine rotor blades</span>
+<span class="sd">        hubDiam : float</span>
+<span class="sd">          the specified hub diameter (if == 0, then it is set within compute method) [m]</span>
+<span class="sd">        RatedWindSpeed : float</span>
+<span class="sd">          wind speed for rated power (default == 12 if not provided) [m/s]</span>
+<span class="sd">        RootMoment : float</span>
+<span class="sd">          maximum flap-wise root moment for the blade (if == 0, then it is set within compute method) [Nm]</span>
+<span class="sd">        AirDensity : float</span>
+<span class="sd">          air density at hub height (default == 1.225 kg / m^3 if not provided) [kg / m^3]</span>
+<span class="sd">        Solidity : float</span>
+<span class="sd">          solidity of the rotor (default == 0.065 if not provided)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_mass</span><span class="p">(</span><span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">,</span> <span class="n">RatedWindSpeed</span><span class="p">,</span> <span class="n">RootMoment</span><span class="p">,</span> <span class="n">AirDensity</span><span class="p">,</span> <span class="n">Solidity</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="PitchSystem.update_mass"><a class="viewcode-back" href="../../../generated/sunderpact.src.hubsystem.PitchSystem.update_mass.html#sunderpact.src.hubsystem.PitchSystem.update_mass">[docs]</a>    <span class="k">def</span> <span class="nf">update_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">RatedWindSpeed</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">RootMoment</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">AirDensity</span><span class="o">=</span><span class="mf">1.225</span><span class="p">,</span> <span class="n">Solidity</span><span class="o">=</span><span class="mf">0.065</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Computes the dimensions, mass, and mass properiteis for the wind turbine hub system and components.</span>
+<span class="sd">        </span>
+<span class="sd">        The compute method determines and sets the attributes for the hub system based on the inputs described in the parameter section below. </span>
+<span class="sd">        The mass is calculated based input loads accoreding to the University of Sunderland model [1] and the dimensions are calculated based on the NREL WindPACT rotor studies [2].</span>
+<span class="sd">     </span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          The wind turbine rotor diameter [m]</span>
+<span class="sd">        BladeMass : float</span>
+<span class="sd">          The wind turbine individual blade mass [kg]</span>
+<span class="sd">        BladeNum : int</span>
+<span class="sd">          Number of wind turbine rotor blades</span>
+<span class="sd">        hubDiam : float</span>
+<span class="sd">          the specified hub diameter (if == 0, then it is set within compute method) [m]</span>
+<span class="sd">        RatedWindSpeed : float</span>
+<span class="sd">          wind speed for rated power (default == 12 if not provided) [m/s]</span>
+<span class="sd">        RootMoment : float</span>
+<span class="sd">          maximum flap-wise root moment for the blade (if == 0, then it is set within compute method) [Nm]</span>
+<span class="sd">        AirDensity : float</span>
+<span class="sd">          air density at hub height (default == 1.225 kg / m^3 if not provided) [kg / m^3]</span>
+<span class="sd">        Solidity : float</span>
+<span class="sd">          solidity of the rotor (default == 0.065 if not provided)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c"># Sunderland method for calculating pitch system masses</span>
+        <span class="n">pitchmatldensity</span> <span class="o">=</span> <span class="mf">7860.0</span>                             <span class="c"># density of pitch system material (kg / m^3) - assuming BS1503-622 (same material as LSS)</span>
+        <span class="n">pitchmatlstress</span>  <span class="o">=</span> <span class="mf">371000000.0</span>                              <span class="c"># allowable stress of hub material (N / m^2)</span>
+
+        <span class="k">if</span> <span class="n">RootMoment</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">RootMoment</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.06</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">)</span> <span class="o">*</span> <span class="n">AirDensity</span> <span class="o">*</span> <span class="p">(</span><span class="n">RatedWindSpeed</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Solidity</span> <span class="o">*</span> <span class="p">(</span><span class="n">RotorDiam</span> <span class="o">**</span> <span class="mi">3</span><span class="p">))</span> <span class="o">/</span> <span class="n">BladeNum</span>
+                                                            <span class="c"># simplified equation for blade root moment (Sunderland model) if one is not provided</span>
+
+        <span class="n">hubpitchFact</span>      <span class="o">=</span> <span class="mf">1.0</span>                                 <span class="c"># default factor is 1.0 (0.54 for modern designs)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span><span class="n">hubpitchFact</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.22</span> <span class="o">*</span> <span class="n">BladeMass</span> <span class="o">*</span> <span class="n">BladeNum</span> <span class="o">+</span> <span class="mf">12.6</span> <span class="o">*</span> <span class="n">BladeNum</span> <span class="o">*</span> <span class="n">RootMoment</span> <span class="o">*</span> <span class="p">(</span><span class="n">pitchmatldensity</span> <span class="o">/</span> <span class="n">pitchmatlstress</span><span class="p">))</span>
+                                                            <span class="c"># mass of pitch system based on Sunderland model</span>
+
+        <span class="c"># calculate mass properties</span>
+        <span class="k">if</span> <span class="n">hubDiam</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span><span class="p">(</span><span class="mf">3.30</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span><span class="p">(</span><span class="n">hubDiam</span><span class="p">)</span>
+
+        <span class="c"># calculate mass properties</span>
+        <span class="n">cm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">])</span>
+        <span class="n">cm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>     <span class="o">=</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="n">RotorDiam</span><span class="p">)</span>
+        <span class="n">cm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>     <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">cm</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>     <span class="o">=</span> <span class="mf">0.025</span> <span class="o">*</span> <span class="n">RotorDiam</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cm</span> <span class="o">=</span> <span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+
+        <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+        <span class="n">I</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span>
+        <span class="n">I</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">I</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">I</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">I</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">I</span> <span class="o">=</span> <span class="p">(</span><span class="n">I</span><span class="p">)</span>
+
+<span class="c">#-------------------------------------------------------------------------------      </span>
+</div>
+<span class="k">class</span> <span class="nc">Spinner</span><span class="p">():</span> 
+    <span class="n">implements</span><span class="p">(</span><span class="n">SubComponent</span><span class="p">)</span> 
+    <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">       Spinner class</span>
+<span class="sd">          The SpinnerClass is used to represent the spinner of a wind turbine. </span>
+<span class="sd">          It contains the general properties for a wind turbine component as well as additional design load and dimentional attributes as listed below.</span>
+<span class="sd">          It contains an update method to determine the mass, mass properties, and dimensions of the component.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="Spinner.__init__"><a class="viewcode-back" href="../../../generated/sunderpact.src.hubsystem.Spinner.__init__.html#sunderpact.src.hubsystem.Spinner.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">hubDiam</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">        Initializes spinner component </span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          The wind turbine rotor diameter [m]</span>
+<span class="sd">        hubDiam : float</span>
+<span class="sd">          the specified hub diameter (if == 0, then it is set within compute method) [m]</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_mass</span><span class="p">(</span><span class="n">RotorDiam</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Spinner.update_mass"><a class="viewcode-back" href="../../../generated/sunderpact.src.hubsystem.Spinner.update_mass.html#sunderpact.src.hubsystem.Spinner.update_mass">[docs]</a>    <span class="k">def</span> <span class="nf">update_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">hubDiam</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Computes the dimensions, mass, and mass properties for the wind turbine spinner.</span>
+<span class="sd">        </span>
+<span class="sd">        The compute method determines and sets the attributes for the spinner component. </span>
+<span class="sd">        The mass is calculated based input loads accoreding to the University of Sunderland model [1] and the dimensions are calculated based on the NREL WindPACT rotor studies [2].</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          The wind turbine rotor diameter [m]</span>
+<span class="sd">        hubDiam : float</span>
+<span class="sd">          the specified hub diameter (if == 0, then it is set within compute method) [m]          </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span><span class="mf">18.5</span> <span class="o">*</span> <span class="n">RotorDiam</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mf">520.5</span><span class="p">)</span>   <span class="c"># spinner mass comes from cost and scaling model</span>
+
+        <span class="c"># calculate mass properties</span>
+        <span class="k">if</span> <span class="n">hubDiam</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span><span class="p">(</span><span class="mf">3.30</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span><span class="p">(</span><span class="n">hubDiam</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.055</span> <span class="o">/</span> <span class="mf">3.30</span><span class="p">)</span>         <span class="c"># 0.055 for 1.5 MW outer diameter of 3.3 - using proportional constant</span>
+
+        <span class="n">cm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">])</span>
+        <span class="n">cm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>     <span class="o">=</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="n">RotorDiam</span><span class="p">)</span>
+        <span class="n">cm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>     <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">cm</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>     <span class="o">=</span> <span class="mf">0.025</span> <span class="o">*</span> <span class="n">RotorDiam</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cm</span> <span class="o">=</span> <span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+
+        <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+        <span class="n">I</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">5</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">)</span> <span class="o">**</span> <span class="mi">5</span><span class="p">)</span> <span class="o">/</span> \
+               <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">)</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">I</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">I</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">I</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">I</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">I</span> <span class="o">=</span> <span class="p">(</span><span class="n">I</span><span class="p">)</span>
+
+<span class="c">#-------------------------------------------------------------------------------</span>
+</div>
+<span class="k">class</span> <span class="nc">HubSystem</span><span class="p">():</span> 
+    <span class="n">implements</span><span class="p">(</span><span class="n">SubComponent</span><span class="p">)</span> 
+    <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">       HubSystem class</span>
+<span class="sd">          The HubSystem class is used to represent the hub system of a wind turbine. </span>
+<span class="sd">          It contains the general properties for a wind turbine component as well as additional design load and dimentional attributes as listed below.</span>
+<span class="sd">          It contains an update method to determine the mass, mass properties, and dimensions of the component.            </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="HubSystem.__init__"><a class="viewcode-back" href="../../../generated/sunderpact.src.hubsystem.HubSystem.__init__.html#sunderpact.src.hubsystem.HubSystem.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">RatedWindSpeed</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">RootMoment</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">AirDensity</span><span class="o">=</span><span class="mf">1.225</span><span class="p">,</span> <span class="n">Solidity</span><span class="o">=</span><span class="mf">0.065</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">        Initializes hub system component </span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          The wind turbine rotor diameter [m]</span>
+<span class="sd">        BladeMass : float</span>
+<span class="sd">          The wind turbine individual blade mass [kg]</span>
+<span class="sd">        BladeNum : int</span>
+<span class="sd">          Number of wind turbine rotor blades</span>
+<span class="sd">        hubDiam : float</span>
+<span class="sd">          the specified hub diameter (if == 0, then it is set within compute method) [m]</span>
+<span class="sd">        RatedWindSpeed : float</span>
+<span class="sd">          wind speed for rated power (default == 12 if not provided) [m/s]</span>
+<span class="sd">        RootMoment : float</span>
+<span class="sd">          maximum flap-wise root moment for the blade (if == 0, then it is set within compute method) [Nm]</span>
+<span class="sd">        AirDensity : float</span>
+<span class="sd">          air density at hub height (default == 1.225 kg / m^3 if not provided) [kg / m^3]</span>
+<span class="sd">        Solidity : float</span>
+<span class="sd">          solidity of the rotor (default == 0.065 if not provided)</span>
+<span class="sd">        pitchSys : PitchSystem</span>
+<span class="sd">          the pitch system hub component</span>
+<span class="sd">        hub : Hub</span>
+<span class="sd">          the hub sub component</span>
+<span class="sd">        spinner : Spinner</span>
+<span class="sd">          the spinner / nose cone sub component</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hub</span> <span class="o">=</span> <span class="n">Hub</span><span class="p">(</span><span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">,</span> <span class="n">RatedWindSpeed</span><span class="p">,</span> <span class="n">RootMoment</span><span class="p">,</span> <span class="n">AirDensity</span><span class="p">,</span> <span class="n">Solidity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pitchSystem</span> <span class="o">=</span> <span class="n">PitchSystem</span><span class="p">(</span><span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">,</span> <span class="n">RatedWindSpeed</span><span class="p">,</span> <span class="n">RootMoment</span><span class="p">,</span> <span class="n">AirDensity</span><span class="p">,</span> <span class="n">Solidity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spinner</span> <span class="o">=</span> <span class="n">Spinner</span><span class="p">(</span><span class="n">RotorDiam</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_mass</span><span class="p">(</span><span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">,</span> <span class="n">RatedWindSpeed</span><span class="p">,</span> <span class="n">RootMoment</span><span class="p">,</span> <span class="n">AirDensity</span><span class="p">,</span> <span class="n">Solidity</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="HubSystem.update_mass"><a class="viewcode-back" href="../../../generated/sunderpact.src.hubsystem.HubSystem.update_mass.html#sunderpact.src.hubsystem.HubSystem.update_mass">[docs]</a>    <span class="k">def</span> <span class="nf">update_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">RatedWindSpeed</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">RootMoment</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">AirDensity</span><span class="o">=</span><span class="mf">1.225</span><span class="p">,</span> <span class="n">Solidity</span><span class="o">=</span><span class="mf">0.065</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Computes the dimensions, mass, and mass properiteis for the wind turbine hub system and components.</span>
+<span class="sd">        </span>
+<span class="sd">        The compute method determines and sets the attributes for the hub system based on the inputs described in the parameter section below. </span>
+<span class="sd">        The mass is calculated based input loads accoreding to the University of Sunderland model [1] and the dimensions are calculated based on the NREL WindPACT rotor studies [2].</span>
+<span class="sd">       </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          The wind turbine rotor diameter [m]</span>
+<span class="sd">        BladeMass : float</span>
+<span class="sd">          The wind turbine individual blade mass [kg]</span>
+<span class="sd">        BladeNum : int</span>
+<span class="sd">          Number of wind turbine rotor blades</span>
+<span class="sd">        hubDiam : float</span>
+<span class="sd">          the specified hub diameter (if == 0, then it is set within compute method) [m]</span>
+<span class="sd">        RatedWindSpeed : float</span>
+<span class="sd">          wind speed for rated power (default == 12 if not provided) [m/s]</span>
+<span class="sd">        RootMoment : float</span>
+<span class="sd">          maximum flap-wise root moment for the blade (if == 0, then it is set within compute method) [Nm]</span>
+<span class="sd">        AirDensity : float</span>
+<span class="sd">          air density at hub height (default == 1.225 kg / m^3 if not provided) [kg / m^3]</span>
+<span class="sd">        Solidity : float</span>
+<span class="sd">          solidity of the rotor (default == 0.065 if not provided)          </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">update_mass</span><span class="p">(</span><span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">,</span> <span class="n">RatedWindSpeed</span><span class="p">,</span> <span class="n">RootMoment</span><span class="p">,</span> <span class="n">AirDensity</span><span class="p">,</span> <span class="n">Solidity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pitchSystem</span><span class="o">.</span><span class="n">update_mass</span><span class="p">(</span><span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">,</span> <span class="n">RatedWindSpeed</span><span class="p">,</span> <span class="n">RootMoment</span><span class="p">,</span> <span class="n">AirDensity</span><span class="p">,</span> <span class="n">Solidity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spinner</span><span class="o">.</span><span class="n">update_mass</span><span class="p">(</span><span class="n">RotorDiam</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pitchSystem</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinner</span><span class="o">.</span><span class="n">mass</span>
+
+        <span class="c"># calculate mass properties</span>
+        <span class="c"># calculation of mass center and moments of inertia</span>
+        <span class="n">cm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">)):</span>
+            <span class="c"># calculate center of mass</span>
+            <span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pitchSystem</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pitchSystem</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">spinner</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinner</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pitchSystem</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinner</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cm</span> <span class="o">=</span> <span class="n">cm</span>
+
+        <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">)):</span>                        <span class="c"># calculating MOI, at nacelle center of gravity with origin at tower top center / yaw mass center, ignoring masses of non-drivetrain components / auxiliary systems</span>
+            <span class="c"># calculate moments around CM</span>
+            <span class="c"># sum moments around each components CM</span>
+            <span class="n">I</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pitchSystem</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinner</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="c"># translate to hub system CM using parallel axis theorem</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">)):</span> 
+                <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="p">:</span>
+                    <span class="n">I</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span>  <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> \
+                                  <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pitchSystem</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pitchSystem</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> \
+                                  <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinner</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinner</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">I</span> <span class="o">=</span> <span class="n">I</span>
+
+<span class="c">#-------------------------------------------------------------------------------</span>
+</div>
+<span class="k">def</span> <span class="nf">example</span><span class="p">():</span>
+  
+    <span class="c"># simple test of module</span>
+
+    <span class="c"># NREL 5 MW turbine</span>
+    <span class="k">print</span> <span class="s">&quot;NREL 5 MW turbine test&quot;</span>
+    <span class="n">BladeMass</span> <span class="o">=</span> <span class="mf">17740.0</span> <span class="c"># kg</span>
+    <span class="n">RotorDiam</span> <span class="o">=</span> <span class="mf">126.0</span> <span class="c"># m</span>
+    <span class="n">BladeNum</span>  <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">hubDiam</span>   <span class="o">=</span> <span class="mf">0.0</span> <span class="c"># m</span>
+    <span class="n">RootMoment</span><span class="o">=</span> <span class="mf">0.0</span> <span class="c"># Nm</span>
+    <span class="n">AirDensity</span><span class="o">=</span> <span class="mf">1.225</span> <span class="c"># kg/(m^3)</span>
+    <span class="n">Solidity</span>  <span class="o">=</span> <span class="mf">0.0517</span> 
+    <span class="n">RatedWindSpeed</span> <span class="o">=</span> <span class="mf">11.05</span> <span class="c"># m/s</span>
+    <span class="n">hub</span> <span class="o">=</span> <span class="n">HubSystem</span><span class="p">(</span><span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">,</span> <span class="n">RatedWindSpeed</span><span class="p">,</span> <span class="n">RootMoment</span><span class="p">,</span> <span class="n">AirDensity</span><span class="p">,</span> <span class="n">Solidity</span><span class="p">)</span>
+
+    <span class="k">print</span> <span class="s">&quot;Hub Components&quot;</span>
+    <span class="k">print</span> <span class="s">&#39;  hub         {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>  <span class="c"># 31644.47</span>
+    <span class="k">print</span> <span class="s">&#39;  pitch mech  {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">pitchSystem</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span> <span class="c"># 17003.98</span>
+    <span class="k">print</span> <span class="s">&#39;  nose cone   {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">spinner</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span> <span class="c"># 1810.50</span>
+    <span class="k">print</span> <span class="s">&#39;Hub system total {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span> <span class="c"># 50458.95</span>
+    <span class="k">print</span> <span class="s">&#39;    cm {0:6.2f} {1:6.2f} {2:6.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&#39;    I {0:6.1f} {1:6.1f} {2:6.1f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">example2</span><span class="p">():</span>
+
+    <span class="c"># simple test of module</span>
+
+    <span class="c"># WindPACT 1.5 MW turbine</span>
+    <span class="k">print</span> <span class="s">&quot;WindPACT 1.5 MW turbine test&quot;</span>
+    <span class="n">BladeMass</span> <span class="o">=</span> <span class="mf">4470.0</span>
+    <span class="n">RotorDiam</span> <span class="o">=</span> <span class="mf">77.0</span>
+    <span class="n">BladeNum</span>  <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">hubDiam</span>   <span class="o">=</span> <span class="mf">3.2</span>
+    <span class="n">RootMoment</span><span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">AirDensity</span><span class="o">=</span> <span class="mf">1.225</span>
+    <span class="n">Solidity</span>  <span class="o">=</span> <span class="mf">0.065</span>
+    <span class="n">RatedWindSpeed</span> <span class="o">=</span> <span class="mf">12.12</span>
+    <span class="n">hub</span> <span class="o">=</span> <span class="n">HubSystem</span><span class="p">(</span><span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">,</span> <span class="n">RatedWindSpeed</span><span class="p">,</span> <span class="n">RootMoment</span><span class="p">,</span> <span class="n">AirDensity</span><span class="p">,</span> <span class="n">Solidity</span><span class="p">)</span>
+
+    <span class="k">print</span> <span class="s">&quot;Hub Components&quot;</span>
+    <span class="k">print</span> <span class="s">&#39;  hub         {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;  pitch mech  {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">pitchSystem</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;  nose cone   {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">spinner</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;HUB TOTAL     {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;cm {0:6.2f} {1:6.2f} {2:6.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&#39;I {0:6.1f} {1:6.1f} {2:6.1f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="c"># GRC 750 kW turbine</span>
+    <span class="k">print</span> <span class="s">&quot;windpact 750 kW turbine test&quot;</span>
+    <span class="n">BladeMass</span> <span class="o">=</span> <span class="mf">3400.0</span>
+    <span class="n">RotorDiam</span> <span class="o">=</span> <span class="mf">55.0</span>
+    <span class="n">BladeNum</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">hubDiam</span> <span class="o">=</span> <span class="mf">3.0</span>
+    <span class="n">RootMoment</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">AirDensity</span> <span class="o">=</span> <span class="mf">1.225</span>
+    <span class="n">Solidity</span> <span class="o">=</span> <span class="mf">0.05</span> <span class="c"># uknown value</span>
+    <span class="n">RatedWindSpeed</span> <span class="o">=</span> <span class="mf">16.0</span>
+    <span class="n">hub</span><span class="o">.</span><span class="n">update_mass</span><span class="p">(</span><span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">,</span> <span class="n">RatedWindSpeed</span><span class="p">,</span> <span class="n">RootMoment</span><span class="p">,</span> <span class="n">AirDensity</span><span class="p">,</span> <span class="n">Solidity</span><span class="p">)</span>
+
+    <span class="k">print</span> <span class="s">&quot;Hub Components&quot;</span>
+    <span class="k">print</span> <span class="s">&#39;  hub         {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;  pitch mech  {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">pitchSystem</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;  nose cone   {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">spinner</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;HUB TOTAL     {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;cm {0:6.2f} {1:6.2f} {2:6.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&#39;I {0:6.1f} {1:6.1f} {2:6.1f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="c"># Windpact / Alstom 3.0 MW</span>
+    <span class="k">print</span> <span class="s">&quot;windpact / csm 3.0 MW&quot;</span>
+    <span class="n">BladeMass</span> <span class="o">=</span> <span class="mf">13363.0</span> <span class="c"># from CSM - not included in windpact/alstom data</span>
+    <span class="n">RotorDiam</span> <span class="o">=</span> <span class="mf">100.8</span> <span class="c"># alstom</span>
+    <span class="n">BladeNum</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">hubDiam</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">RootMoment</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">AirDensity</span> <span class="o">=</span> <span class="mf">1.225</span>
+    <span class="n">Solidity</span> <span class="o">=</span> <span class="mf">0.06</span> <span class="c"># unknown value</span>
+    <span class="n">RatedWindSpeed</span> <span class="o">=</span> <span class="mf">12.0</span> <span class="c"># expected to be closer to 1.5 and 5 MW</span>
+    <span class="n">hub</span><span class="o">.</span><span class="n">update_mass</span><span class="p">(</span><span class="n">BladeMass</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">BladeNum</span><span class="p">,</span> <span class="n">hubDiam</span><span class="p">,</span> <span class="n">RatedWindSpeed</span><span class="p">,</span> <span class="n">RootMoment</span><span class="p">,</span> <span class="n">AirDensity</span><span class="p">,</span> <span class="n">Solidity</span><span class="p">)</span>   
+    
+    <span class="k">print</span> <span class="s">&quot;Hub Components&quot;</span>
+    <span class="k">print</span> <span class="s">&#39;  hub         {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;  pitch mech  {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">pitchSystem</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;  nose cone   {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">spinner</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;HUB TOTAL     {0:8.1f} kg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;cm {0:6.2f} {1:6.2f} {2:6.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&#39;I {0:6.1f} {1:6.1f} {2:6.1f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hub</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">hub</span><span class="o">.</span><span class="n">I</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">example</span><span class="p">()</span>
+    
+    <span class="c">#example2()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../index.html">csm 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, NREL.
+      Last updated on Jun 19, 2013.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
