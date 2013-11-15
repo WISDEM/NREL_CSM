@@ -1,0 +1,12 @@
+Metadata-Version: 1.0
+Name: NREL-CSM
+Version: 0.1
+Summary: NREL Cost and Scaling Model
+Home-page: UNKNOWN
+Author: George Scott and Katherine Dykes
+Author-email: systems.engineering@nrel.gov
+License: Apache v. 2.0
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering
