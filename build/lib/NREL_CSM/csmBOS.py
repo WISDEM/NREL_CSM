@@ -164,11 +164,13 @@ class csmBOS:
                     self.electrical     + \
                     self.engPermits     + \
                     self.pai            + \
-                    self.scour       
+                    self.scour
 
         if (iDepth > 1):
             self.suretyBond = suretyBRate * (tcc + self.cost)
-            self.cost = self.cost + self.suretyBond 
+            self.cost = self.cost + self.suretyBond
+        else:
+        	  self.suretyBond = 0.0
 
         if (verbose > 0):
             self.dump()
@@ -230,7 +232,7 @@ def example():
     rtrDiam = 126.0
     year = 2009
     month = 12
-    tcc = 6087803.555
+    tcc = 5950209.283
     
     bos.compute(seaDepth,machineRating,hubHt,rtrDiam,tcc, year, month, 1)
     

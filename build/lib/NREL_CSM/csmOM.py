@@ -9,7 +9,7 @@ Copyright (c)  NREL. All rights reserved.
 
 from config import *
 
-class csmOM:
+class csmOM(object):
     """ 
     O&M (operations & maintenance) cost module 
         costs are proportional to AEP, with different constants
