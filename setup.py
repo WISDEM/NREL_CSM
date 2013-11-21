@@ -6,30 +6,26 @@
 
 from setuptools import setup, find_packages
 
-setup(
- name='NREL_CSM',
- version='0.1',
- author='George Scott and Katherine Dykes',
- author_email='systems.engineering@nrel.gov',
- #url='',
- classifiers = ['Intended Audience :: Science/Research',
+kwargs = {'author': 'George Scott and Katherine Dykes',
+ 'author_email': 'systems.engineering@nrel.gov',
+ 'classifiers': ['Intended Audience :: Science/Research',
                  'Topic :: Scientific/Engineering'],
- description='NREL Cost and Scaling Model',
- #download_url= '',
- license='Apache v. 2.0',
+ 'description': '',
+ 'download_url': '',
+ 'include_package_data': True,
+ 'install_requires': ['openmdao.main'],
+ 'keywords': ['openmdao'],
+ 'license': 'Apache v 2.0',
+ #'maintainer': '',
+ #'maintainer_email': '',
+ 'name': 'NREL_CSM',
+ 'package_data': {'NREL_CSM': ['*.txt'], 'NREL_CSM': ['static/*.txt'], 'NREL_CSM.static': ['*.txt']},
+ 'package_dir': {'': 'src'},
+ 'packages': ['NREL_CSM', 'NREL_CSM.static'],
+ 'url': '',
+ 'version': '0.1',
+ 'zip_safe': False}
 
- # adding packages
- packages= ['NREL_CSM', 'NREL_CSM.static'],
- package_dir = {'':'src'},
 
- # trying to add files...
- include_package_data = True,
- package_data = {
-      '': ['*.txt'],
-      '': ['static/*.txt'],
-      'static': ['*.txt'],
-  },
+setup(**kwargs)
 
- zip_safe=False,
- install_requires=['distribute'],
-)
