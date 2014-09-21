@@ -1,0 +1,892 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nrel_csm.csmNacelle &mdash; NREL_CSM 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nrel.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="NREL_CSM 0.1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../index.html">NREL_CSM 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nrel_csm.csmNacelle</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">csmNacelle.py</span>
+
+<span class="sd">Created by George Scott on 2012-08-01.</span>
+<span class="sd">Modified by Katherine Dykes 2012.</span>
+<span class="sd">Copyright (c) NREL. All rights reserved.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">config</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c">#-------------------------------------------------------------------------------</span>
+        
+
+<div class="viewcode-block" id="LowSpdShaft"><a class="viewcode-back" href="../../documentation.html#nrel_csm.csmNacelle.LowSpdShaft">[docs]</a><span class="k">class</span> <span class="nc">LowSpdShaft</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; LowSpdShaft class </span>
+<span class="sd">          lss = LowSpdShaft()</span>
+<span class="sd">          lss.compute(RotorDiam, RotorMass, RotorTorque[,debug=1][,verbose=1]) : computes lss.mass, lss.cost</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span>  <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the parameters for low speed shaft</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mass : float</span>
+<span class="sd">          Low speed shaft mass [kg]</span>
+<span class="sd">        cost : float</span>
+<span class="sd">          Low speed shaft cost [USD]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">RotorDiam</span><span class="p">,</span> <span class="n">RotorMass</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">,</span> <span class="n">curr_yr</span><span class="p">,</span> <span class="n">curr_mon</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute mass and cost for a low speed shaft by calling computeMass and computeCost</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          rotor diameter [m] of the turbine</span>
+<span class="sd">        RotorMass : float</span>
+<span class="sd">          Mass of rotor [kg] of the turbine</span>
+<span class="sd">        RotorTorque : float</span>
+<span class="sd">          Rated torque [N-m] of the turbine</span>
+<span class="sd">        curr_yr : int</span>
+<span class="sd">          year of project start</span>
+<span class="sd">        curr_mon : int</span>
+<span class="sd">          month of project start</span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeMass</span><span class="p">(</span><span class="n">RotorDiam</span><span class="p">,</span> <span class="n">RotorMass</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeCost</span><span class="p">(</span><span class="n">RotorDiam</span><span class="p">,</span> <span class="n">curr_yr</span><span class="p">,</span> <span class="n">curr_mon</span><span class="p">)</span>
+      
+    <span class="k">def</span> <span class="nf">computeMass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span> <span class="n">RotorMass</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute mass for a low speed shaft using the NREL Cost and Scaling Model</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          rotor diameter [m] of the turbine</span>
+<span class="sd">        RotorMass : float</span>
+<span class="sd">          Mass of rotor [kg] of the turbine</span>
+<span class="sd">        RotorTorque : float</span>
+<span class="sd">          Rated torque [N-m] of the turbine</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lenShaft</span>  <span class="o">=</span> <span class="mf">0.03</span> <span class="o">*</span> <span class="n">RotorDiam</span>                                                                   
+        <span class="n">mmtArm</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lenShaft</span> <span class="o">/</span> <span class="mi">5</span>                                                                 
+        <span class="n">bendLoad</span>  <span class="o">=</span> <span class="mf">1.25</span><span class="o">*</span><span class="mf">9.81</span><span class="o">*</span><span class="n">RotorMass</span>                                                           
+        <span class="n">bendMom</span>   <span class="o">=</span> <span class="n">bendLoad</span> <span class="o">*</span> <span class="n">mmtArm</span>                                                                 
+        <span class="bp">self</span><span class="o">.</span><span class="n">hFact</span>     <span class="o">=</span> <span class="mf">0.1</span>                                                                                    
+        <span class="n">hollow</span>    <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hFact</span><span class="p">)</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>                                                                   
+        <span class="bp">self</span><span class="o">.</span><span class="n">outDiam</span>   <span class="o">=</span> <span class="p">((</span><span class="mi">32</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">hollow</span><span class="o">*</span><span class="mf">3.25</span><span class="o">*</span><span class="p">((</span><span class="n">RotorTorque</span><span class="o">*</span><span class="mi">3</span><span class="o">/</span><span class="mf">371000000.</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">bendMom</span><span class="o">/</span><span class="mi">71070000</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mf">3.</span><span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">inDiam</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outDiam</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">hFact</span> 
+                                                                              
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span>      <span class="o">=</span> <span class="mf">1.25</span><span class="o">*</span><span class="p">(</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outDiam</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">inDiam</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">lenShaft</span><span class="o">*</span><span class="mi">7860</span>
+                                       
+    <span class="k">def</span> <span class="nf">computeCost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span><span class="n">curr_yr</span><span class="p">,</span> <span class="n">curr_mon</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute cost for a low speed shaft using the NREL Cost and Scaling Model</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          rotor diameter [m] of the turbine</span>
+<span class="sd">        curr_yr : int</span>
+<span class="sd">          year of project start</span>
+<span class="sd">        curr_mon : int</span>
+<span class="sd">          month of project start</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+ 
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_yr</span> <span class="o">=</span> <span class="n">curr_yr</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_mon</span> <span class="o">=</span> <span class="n">curr_mon</span>
+               
+        <span class="n">LowSpeedShaftCost2002</span> <span class="o">=</span> <span class="mf">0.0998</span> <span class="o">*</span> <span class="n">RotorDiam</span> <span class="o">**</span> <span class="mf">2.8873</span>
+        <span class="n">lssCostEsc</span>     <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_LSS&#39;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="n">LowSpeedShaftCost2002</span> <span class="o">*</span> <span class="n">lssCostEsc</span>
+        
+    <span class="k">def</span> <span class="nf">getMass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the mass for the low speed shaft.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mass : float</span>
+<span class="sd">            Wind turbine low speed shaft mass [kg]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span>
+        
+    <span class="k">def</span> <span class="nf">getCost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the cost for the wind turbine low speed shaft.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cost : float</span>
+<span class="sd">            Wind turbine low speed shaft cost [USD]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost</span>
+        
+
+<span class="c">#-------------------------------------------------------------------------------</span>
+</div>
+<span class="k">class</span> <span class="nc">GearBox</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; GearBox class </span>
+<span class="sd">          gbx = GearBox()</span>
+<span class="sd">          gbx.compute(iDsgn,MachineRating,MaxTipSpd,RotorDiam,RatedHubPower[,verbose=1]) : computes gbx.mass, gbx.cost</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">costCoeff</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mf">16.45</span>  <span class="p">,</span> <span class="mf">74.101</span>     <span class="p">,</span>   <span class="mf">15.25697015</span><span class="p">,</span>  <span class="mi">0</span> <span class="p">]</span>
+    <span class="n">costExp</span>   <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span>  <span class="mf">1.2491</span><span class="p">,</span>  <span class="mf">1.002</span>     <span class="p">,</span>    <span class="mf">1.2491</span>    <span class="p">,</span>  <span class="mi">0</span> <span class="p">]</span>
+    <span class="n">massCoeff</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mf">65.601</span> <span class="p">,</span> <span class="mf">81.63967335</span><span class="p">,</span>  <span class="mf">129.1702924</span> <span class="p">,</span>  <span class="mi">0</span> <span class="p">]</span>
+    <span class="n">massExp</span>   <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span>  <span class="mf">0.759</span> <span class="p">,</span>  <span class="mf">0.7738</span>    <span class="p">,</span>    <span class="mf">0.7738</span>    <span class="p">,</span>  <span class="mi">0</span> <span class="p">]</span>
+    
+    <span class="k">def</span>  <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the parameters for gearbox</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mass : float</span>
+<span class="sd">          Gearbox mass [kg]</span>
+<span class="sd">        cost : float</span>
+<span class="sd">          Gearbox cost [USD]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">iDsgn</span><span class="p">,</span><span class="n">MachineRating</span><span class="p">,</span><span class="n">RotorTorque</span><span class="p">,</span> <span class="n">curr_yr</span><span class="p">,</span> <span class="n">curr_mon</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute mass and cost for a gearbox by calling computeMass and computeCost</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        iDsgn : int</span>
+<span class="sd">          Drivetrain Design (1 - 3-staged geared, 2 - single-stage, 3 - multi-gen, 4 - direct drive)</span>
+<span class="sd">        MachineRating : float</span>
+<span class="sd">          Rated power [kW] for wind turbine</span>
+<span class="sd">        RotorTorque : float</span>
+<span class="sd">          Rated torque [N-m] of the turbine</span>
+<span class="sd">        curr_yr : int</span>
+<span class="sd">          year of project start</span>
+<span class="sd">        curr_mon : int</span>
+<span class="sd">          month of project start</span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeMass</span><span class="p">(</span><span class="n">iDsgn</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeCost</span><span class="p">(</span><span class="n">iDsgn</span><span class="p">,</span> <span class="n">MachineRating</span><span class="p">,</span> <span class="n">curr_yr</span><span class="p">,</span> <span class="n">curr_mon</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">computeMass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">iDsgn</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute mass for a gearbox using the cost and scaling model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        iDsgn : int</span>
+<span class="sd">          Drivetrain Design (1 - 3-staged geared, 2 - single-stage, 3 - multi-gen, 4 - direct drive)</span>
+<span class="sd">        RotorTorque : float</span>
+<span class="sd">          Rated torque [N-m] of the turbine</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">massCoeff</span><span class="p">[</span><span class="n">iDsgn</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">RotorTorque</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">massExp</span><span class="p">[</span><span class="n">iDsgn</span><span class="p">]</span> 
+        
+    <span class="k">def</span> <span class="nf">computeCost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">iDsgn</span><span class="p">,</span> <span class="n">MachineRating</span><span class="p">,</span> <span class="n">curr_yr</span><span class="p">,</span> <span class="n">curr_mon</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute cost for a gearbox using the NREL Cost and Scaling Model</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        iDsgn : int</span>
+<span class="sd">          Drivetrain Design (1 - 3-staged geared, 2 - single-stage, 3 - multi-gen, 4 - direct drive)</span>
+<span class="sd">        MachineRating : float</span>
+<span class="sd">          Rated power [kW] for wind turbine</span>
+<span class="sd">        curr_yr : int</span>
+<span class="sd">          year of project start</span>
+<span class="sd">        curr_mon : int</span>
+<span class="sd">          month of project start</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_yr</span> <span class="o">=</span> <span class="n">curr_yr</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_mon</span> <span class="o">=</span> <span class="n">curr_mon</span>
+        
+        <span class="n">gearboxCostEsc</span>     <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_GRB&#39;</span><span class="p">)</span>        
+        <span class="n">Gearbox2002</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">costCoeff</span><span class="p">[</span><span class="n">iDsgn</span><span class="p">]</span> <span class="o">*</span> <span class="n">MachineRating</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">costExp</span><span class="p">[</span><span class="n">iDsgn</span><span class="p">]</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="n">Gearbox2002</span> <span class="o">*</span> <span class="n">gearboxCostEsc</span>      
+                        
+    <span class="k">def</span> <span class="nf">getMass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the mass for the gearbox.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mass : float</span>
+<span class="sd">            Wind turbine gearbox mass [kg]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+      
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span>
+        
+    <span class="k">def</span> <span class="nf">getCost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the cost for the wind turbine gearbox.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cost : float</span>
+<span class="sd">            Wind turbine gearbox cost [USD]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+      
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost</span>
+        
+
+<span class="c">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Generator"><a class="viewcode-back" href="../../documentation.html#nrel_csm.csmNacelle.Generator">[docs]</a><span class="k">class</span> <span class="nc">Generator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Generator class </span>
+<span class="sd">          gen = Generator()</span>
+<span class="sd">          gen.compute(iDsgn,MachineRating,MaxTipSpd,RotorDiam,RatedHubPower[,verbose=1]) : computes gen.mass, gen.cost</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">costCoeff</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mf">65.000</span><span class="p">,</span> <span class="mf">54.72533</span><span class="p">,</span>  <span class="mf">48.02963</span> <span class="p">,</span> <span class="mf">219.3333</span> <span class="p">]</span> <span class="c"># $/kW - from &#39;Generators&#39; worksheet</span>
+    <span class="n">massCoeff</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mf">6.4737</span><span class="p">,</span> <span class="mf">10.50972</span><span class="p">,</span>  <span class="mf">5.343902</span> <span class="p">,</span> <span class="mf">37.68400</span> <span class="p">]</span>
+    <span class="n">massExp</span>   <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mf">0.9223</span><span class="p">,</span> <span class="mf">0.922300</span><span class="p">,</span>  <span class="mf">0.922300</span> <span class="p">,</span> <span class="mf">1.000000</span> <span class="p">]</span>
+    
+    <span class="k">def</span>  <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the parameters for the generator</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mass : float</span>
+<span class="sd">          Generator mass [kg]</span>
+<span class="sd">        cost : float</span>
+<span class="sd">          Generator cost [USD]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="mf">0.0</span>
+        
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">iDsgn</span><span class="p">,</span><span class="n">MachineRating</span><span class="p">,</span><span class="n">RotorTorque</span><span class="p">,</span><span class="n">curr_yr</span><span class="p">,</span> <span class="n">curr_mon</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute mass and cost for a generator by calling computeMass and computeCost</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        iDsgn : int</span>
+<span class="sd">          Drivetrain Design (1 - 3-staged geared, 2 - single-stage, 3 - multi-gen, 4 - direct drive)</span>
+<span class="sd">        MachineRating : float</span>
+<span class="sd">          Rated power [kW] for wind turbine</span>
+<span class="sd">        RotorTorque : float</span>
+<span class="sd">          Rated torque [N-m] of the turbine</span>
+<span class="sd">        curr_yr : int</span>
+<span class="sd">          year of project start</span>
+<span class="sd">        curr_mon : int</span>
+<span class="sd">          month of project start</span>
+<span class="sd">        &quot;&quot;&quot;</span>      
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeMass</span><span class="p">(</span><span class="n">iDsgn</span><span class="p">,</span> <span class="n">MachineRating</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeCost</span><span class="p">(</span><span class="n">iDsgn</span><span class="p">,</span> <span class="n">MachineRating</span><span class="p">,</span> <span class="n">curr_yr</span><span class="p">,</span> <span class="n">curr_mon</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">computeMass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">iDsgn</span><span class="p">,</span> <span class="n">MachineRating</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute mass for a generator using the NREL Cost and Scaling Model</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        iDsgn : int</span>
+<span class="sd">          Drivetrain Design (1 - 3-staged geared, 2 - single-stage, 3 - multi-gen, 4 - direct drive)</span>
+<span class="sd">        MachineRating : float</span>
+<span class="sd">          Rated power [kW] for wind turbine</span>
+<span class="sd">        RotorTorque : float</span>
+<span class="sd">          Rated torque [N-m] of the turbine</span>
+<span class="sd">        &quot;&quot;&quot;</span>  
+    
+        <span class="k">if</span> <span class="p">(</span><span class="n">iDsgn</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">massCoeff</span><span class="p">[</span><span class="n">iDsgn</span><span class="p">]</span> <span class="o">*</span> <span class="n">MachineRating</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">massExp</span><span class="p">[</span><span class="n">iDsgn</span><span class="p">]</span>   
+        <span class="k">else</span><span class="p">:</span>  <span class="c"># direct drive</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">massCoeff</span><span class="p">[</span><span class="n">iDsgn</span><span class="p">]</span> <span class="o">*</span> <span class="n">RotorTorque</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">massExp</span><span class="p">[</span><span class="n">iDsgn</span><span class="p">]</span> 
+
+    <span class="k">def</span> <span class="nf">computeCost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">iDsgn</span><span class="p">,</span> <span class="n">MachineRating</span><span class="p">,</span> <span class="n">curr_yr</span><span class="p">,</span> <span class="n">curr_mon</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute mass and cost for a generator using the NREL Cost and Scaling Model</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        iDsgn : int</span>
+<span class="sd">          Drivetrain Design (1 - 3-staged geared, 2 - single-stage, 3 - multi-gen, 4 - direct drive)</span>
+<span class="sd">        MachineRating : float</span>
+<span class="sd">          Rated power [kW] for wind turbine</span>
+<span class="sd">        curr_yr : int</span>
+<span class="sd">          year of project start</span>
+<span class="sd">        curr_mon : int</span>
+<span class="sd">          month of project start</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_yr</span> <span class="o">=</span> <span class="n">curr_yr</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_mon</span> <span class="o">=</span> <span class="n">curr_mon</span>
+      
+        <span class="n">generatorCostEsc</span>     <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_GEN&#39;</span><span class="p">)</span>                                                  
+        <span class="n">GeneratorCost2002</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">costCoeff</span><span class="p">[</span><span class="n">iDsgn</span><span class="p">]</span> <span class="o">*</span> <span class="n">MachineRating</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="n">GeneratorCost2002</span> <span class="o">*</span> <span class="n">generatorCostEsc</span>
+        
+    <span class="k">def</span> <span class="nf">getMass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the mass for the generator.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mass : float</span>
+<span class="sd">            Wind turbine generator mass [kg]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span>
+        
+    <span class="k">def</span> <span class="nf">getCost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the cost for the wind turbine generator.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cost : float</span>
+<span class="sd">            Wind turbine generator cost [USD]</span>
+<span class="sd">        &quot;&quot;&quot;</span>     
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost</span>
+        
+                
+<span class="c">#-------------------------------------------------------------------------------</span>
+</div>
+<div class="viewcode-block" id="csmNacelle"><a class="viewcode-back" href="../../documentation.html#nrel_csm.csmNacelle.csmNacelle">[docs]</a><span class="k">class</span> <span class="nc">csmNacelle</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Nacelle class </span>
+<span class="sd">          (was called DriveTrain)</span>
+<span class="sd">          nac = Nacelle()</span>
+<span class="sd">          nac.compute(rtrDiam,mRating,rtrMass,maxTSR,rtdWS,rtpPwr,iDsgn[,verbose]) : computes nac.mass, nac.cost</span>
+<span class="sd">        contains LowSpdShaft, GearBox, Generator</span>
+<span class="sd">        2012 04 03 - controls moved into Nacelle</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the parameters for the nacelle</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mass : float</span>
+<span class="sd">          Generator mass [kg]</span>
+<span class="sd">        cost : float</span>
+<span class="sd">          Generator cost [USD]</span>
+<span class="sd">        lss : LowSpdShaft</span>
+<span class="sd">          Low Speed Shaft Object</span>
+<span class="sd">        gear : GearBox</span>
+<span class="sd">          Gearbox Object</span>
+<span class="sd">        gen : Generator</span>
+<span class="sd">          Generator Object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lss</span>  <span class="o">=</span> <span class="n">LowSpdShaft</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gear</span> <span class="o">=</span> <span class="n">GearBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gen</span>  <span class="o">=</span> <span class="n">Generator</span><span class="p">()</span>
+        
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span>    <span class="n">MachineRating</span><span class="p">,</span> <span class="n">RotorMass</span><span class="p">,</span> <span class="n">RotorSpeed</span><span class="p">,</span> \
+                      <span class="n">MaximumThrust</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">,</span> <span class="n">iDesign</span><span class="p">,</span>   <span class="n">offshore</span><span class="p">,</span> \
+                      <span class="n">crane</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">AdvancedBedplate</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">curr_yr</span><span class="o">=</span><span class="mi">2009</span><span class="p">,</span><span class="n">curr_mon</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>                                  
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute mass and cost for a full wind turbine Nacelle by calling computeMass and computeCost</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          rotor diameter [m] of the turbine</span>
+<span class="sd">        MachineRating : float</span>
+<span class="sd">          Rated power [kW] for wind turbine</span>
+<span class="sd">        RotorMass : float</span>
+<span class="sd">          Mass of rotor [kg] of the turbine</span>
+<span class="sd">        RotorSpeed : float</span>
+<span class="sd">          Speed of rotor [rpm] at rated power</span>
+<span class="sd">        MaximumThrust : float</span>
+<span class="sd">          Maximum thrust [N] from rotor applied to nacelle</span>
+<span class="sd">        RotorTorque : float</span>
+<span class="sd">          Rated torque [N-m] of the turbine</span>
+<span class="sd">        iDesign : int</span>
+<span class="sd">          Drivetrain Design (1 - 3-staged geared, 2 - single-stage, 3 - multi-gen, 4 - direct drive)</span>
+<span class="sd">        offshore : int</span>
+<span class="sd">          Offshore status: 0 - onshore, 1 - shallow, 2 - transition, 3 - deep</span>
+<span class="sd">        crane : bool</span>
+<span class="sd">          Boolean for onboard crane</span>
+<span class="sd">        AdvancedBedplate : int</span>
+<span class="sd">          Bedplate configuration: 0 - conventional, 1 - modular, 2 - integrated</span>
+<span class="sd">        curr_yr : int</span>
+<span class="sd">          year of project start</span>
+<span class="sd">        curr_mon : int</span>
+<span class="sd">          month of project start</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeMass</span><span class="p">(</span><span class="n">RotorDiam</span><span class="p">,</span>    <span class="n">MachineRating</span><span class="p">,</span> <span class="n">RotorMass</span><span class="p">,</span> <span class="n">RotorSpeed</span><span class="p">,</span> \
+                      <span class="n">MaximumThrust</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">,</span> <span class="n">iDesign</span><span class="p">,</span>   <span class="n">offshore</span><span class="p">,</span> \
+                      <span class="n">crane</span><span class="p">,</span> <span class="n">AdvancedBedplate</span><span class="p">)</span>
+       
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeCost</span><span class="p">(</span><span class="n">RotorDiam</span><span class="p">,</span>    <span class="n">MachineRating</span><span class="p">,</span> <span class="n">RotorMass</span><span class="p">,</span> <span class="n">RotorSpeed</span><span class="p">,</span> \
+                      <span class="n">MaximumThrust</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">,</span> <span class="n">iDesign</span><span class="p">,</span>   <span class="n">offshore</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mainframeMass</span><span class="p">,</span> \
+                      <span class="n">crane</span><span class="p">,</span> <span class="n">curr_yr</span><span class="p">,</span> <span class="n">curr_mon</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>        
+
+    <span class="k">def</span> <span class="nf">computeMass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span>    <span class="n">MachineRating</span><span class="p">,</span> <span class="n">RotorMass</span><span class="p">,</span> <span class="n">RotorSpeed</span><span class="p">,</span> \
+                      <span class="n">MaximumThrust</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">,</span> <span class="n">iDesign</span><span class="p">,</span>   <span class="n">offshore</span><span class="p">,</span> \
+                      <span class="n">crane</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">AdvancedBedplate</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>                                  
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute mass for a full wind turbine Nacelle using the NREL Cost and Scaling Model</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          rotor diameter [m] of the turbine</span>
+<span class="sd">        MachineRating : float</span>
+<span class="sd">          Rated power [kW] for wind turbine</span>
+<span class="sd">        RotorMass : float</span>
+<span class="sd">          Mass of rotor [kg] of the turbine</span>
+<span class="sd">        RotorSpeed : float</span>
+<span class="sd">          Speed of rotor [rpm] at rated power</span>
+<span class="sd">        MaximumThrust : float</span>
+<span class="sd">          Maximum thrust [N] from rotor applied to nacelle</span>
+<span class="sd">        RotorTorque : float</span>
+<span class="sd">          Rated torque [N-m] of the turbine</span>
+<span class="sd">        iDesign : int</span>
+<span class="sd">          Drivetrain Design (1 - 3-staged geared, 2 - single-stage, 3 - multi-gen, 4 - direct drive)</span>
+<span class="sd">        offshore : int</span>
+<span class="sd">          Offshore status: 0 - onshore, 1 - shallow, 2 - transition, 3 - deep</span>
+<span class="sd">        crane : bool</span>
+<span class="sd">          Boolean for onboard crane</span>
+<span class="sd">        AdvancedBedplate : int</span>
+<span class="sd">          Bedplate configuration: 0 - conventional, 1 - modular, 2 - integrated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># initialize input variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crane</span> <span class="o">=</span> <span class="n">crane</span>
+
+        <span class="c"># These RD functions from spreadsheet don&#39;t quite form a continuous composite function        </span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">RotorDiam</span> <span class="o">&lt;=</span> <span class="mf">15.0</span><span class="p">):</span>
+            <span class="n">TowerTopDiam</span> <span class="o">=</span> <span class="mf">0.3</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">RotorDiam</span> <span class="o">&lt;=</span> <span class="mf">60.0</span><span class="p">):</span>
+            <span class="n">TowerTopDiam</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.07042</span><span class="o">*</span><span class="n">RotorDiam</span><span class="o">-</span><span class="mf">0.715</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">TowerTopDiam</span> <span class="o">=</span> <span class="p">(</span><span class="mf">12.29</span><span class="o">*</span><span class="n">RotorDiam</span><span class="o">+</span><span class="mi">2648</span><span class="p">)</span><span class="o">/</span><span class="mi">1000</span>
+        
+        <span class="c"># --- electrical connections           </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">econnectionsMass</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="c"># --- bearings           </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bearingMass</span> <span class="o">=</span> <span class="mf">0.00012266667</span> <span class="o">*</span> <span class="p">(</span><span class="n">RotorDiam</span> <span class="o">**</span> <span class="mf">3.5</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.00030360</span> <span class="o">*</span> <span class="p">(</span><span class="n">RotorDiam</span> <span class="o">**</span> <span class="mf">2.5</span><span class="p">)</span>
+        <span class="n">HousingMass</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bearingMass</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">bhMass</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bearingMass</span> <span class="o">+</span> <span class="n">HousingMass</span>
+        
+        <span class="c"># --- mechanical brake           </span>
+        <span class="n">mechBrakeCost2002</span> <span class="o">=</span> <span class="mf">1.9894</span> <span class="o">*</span> <span class="n">MachineRating</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.1141</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mechBrakeMass</span> <span class="o">=</span> <span class="n">mechBrakeCost2002</span> <span class="o">*</span> <span class="mf">0.10</span>
+        
+        <span class="c"># --- variable-speed electronics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vspdEtronicsMass</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="c"># --- yaw drive bearings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yawDrvMass</span> <span class="o">=</span> <span class="mf">1.6</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.0009</span> <span class="o">*</span> <span class="n">RotorDiam</span> <span class="o">**</span> <span class="mf">3.314</span><span class="p">)</span>
+        
+        <span class="c"># --- hydraulics, cooling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hydrCoolingMass</span> <span class="o">=</span> <span class="mf">0.08</span> <span class="o">*</span> <span class="n">MachineRating</span>
+
+        <span class="c"># --- bedplate ---        </span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">AdvancedBedplate</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>   <span class="c"># not an actual option in cost and scaling model                                           </span>
+            <span class="n">BedplateWeightFac</span> <span class="o">=</span> <span class="mf">2.86</span>  <span class="c"># modular</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">AdvancedBedplate</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span> <span class="c"># test for mod-adv</span>
+            <span class="n">BedplateWeightFac</span> <span class="o">=</span> <span class="mf">2.40</span>  <span class="c"># modular-advanced</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">BedplateWeightFac</span> <span class="o">=</span> <span class="mf">0.71</span>  <span class="c"># advanced</span>
+
+        <span class="n">MassFromTorque</span> <span class="o">=</span> <span class="n">BedplateWeightFac</span> <span class="o">*</span> <span class="mf">0.00368</span> <span class="o">*</span> <span class="n">RotorTorque</span>
+        <span class="n">MassFromThrust</span>      <span class="o">=</span> <span class="mf">0.00158</span> <span class="o">*</span> <span class="n">BedplateWeightFac</span> <span class="o">*</span> <span class="n">MaximumThrust</span> <span class="o">*</span> <span class="n">TowerTopDiam</span>
+
+        <span class="n">MassFromRotorWeight</span> <span class="o">=</span> <span class="mf">0.015</span>   <span class="o">*</span> <span class="n">BedplateWeightFac</span> <span class="o">*</span> <span class="n">RotorMass</span>     <span class="o">*</span> <span class="n">TowerTopDiam</span>
+        
+        <span class="c"># Bedplate(Length|Area) added by GNS</span>
+        <span class="n">BedplateLength</span> <span class="o">=</span> <span class="mf">1.5874</span> <span class="o">*</span> <span class="mf">0.052</span> <span class="o">*</span> <span class="n">RotorDiam</span>
+        <span class="n">BedplateArea</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">BedplateLength</span> <span class="o">*</span> <span class="n">BedplateLength</span>
+        <span class="n">MassFromArea</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">BedplateWeightFac</span> <span class="o">*</span> <span class="n">BedplateArea</span>
+    
+        <span class="c"># --- control system ---</span>
+        
+        <span class="n">initControlCost</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">35000</span><span class="p">,</span> <span class="mi">55900</span> <span class="p">]</span>  <span class="c"># land, off-shore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">controlMass</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">controlCost</span> <span class="o">=</span> <span class="n">initControlCost</span><span class="p">[</span><span class="n">offshore</span><span class="p">]</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_CTL&#39;</span><span class="p">)</span>
+
+        <span class="c"># mfmCoeff[1,4] for different drivetrain configurations</span>
+        <span class="n">mfmCoeff</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="mi">22448</span><span class="p">,</span><span class="mf">1.29490</span><span class="p">,</span><span class="mf">1.72080</span><span class="p">,</span><span class="mi">22448</span> <span class="p">]</span>
+        <span class="n">mfmExp</span>   <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span><span class="mf">1.9525</span><span class="p">,</span> <span class="mf">1.9525</span> <span class="p">,</span>    <span class="mi">0</span> <span class="p">]</span>
+
+        <span class="c"># --- nacelle totals        </span>
+        <span class="n">TotalMass</span> <span class="o">=</span> <span class="n">MassFromTorque</span> <span class="o">+</span> <span class="n">MassFromThrust</span> <span class="o">+</span> <span class="n">MassFromRotorWeight</span> <span class="o">+</span> <span class="n">MassFromArea</span>
+
+        <span class="n">mfmCoeff</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">TotalMass</span>
+        <span class="n">mfmCoeff</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">TotalMass</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainframeMass</span> <span class="o">=</span> <span class="n">mfmCoeff</span><span class="p">[</span><span class="n">iDesign</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">RotorDiam</span> <span class="o">**</span> <span class="n">mfmExp</span><span class="p">[</span><span class="n">iDesign</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">NacellePlatformsMass</span> <span class="o">=</span> <span class="o">.</span><span class="mi">125</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mainframeMass</span>
+        
+        <span class="c"># --- nacelle cover ---        </span>
+        <span class="n">nacelleCovCost2002</span> <span class="o">=</span> <span class="mf">11.537</span> <span class="o">*</span> <span class="n">MachineRating</span> <span class="o">+</span> <span class="p">(</span><span class="mf">3849.7</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nacelleCovMass</span> <span class="o">=</span> <span class="n">nacelleCovCost2002</span> <span class="o">*</span> <span class="mf">0.111111</span>
+        
+        <span class="c"># --- crane ---        </span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">crane</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">craneMass</span> <span class="o">=</span>  <span class="mf">3000.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">craneMass</span> <span class="o">=</span> <span class="mf">0.</span>
+            
+        <span class="c"># --- main frame ---       </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mfTotalMass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mainframeMass</span> <span class="o">+</span> <span class="n">NacellePlatformsMass</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">craneMass</span>
+    
+        <span class="c"># compute mass for subcomponents       </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lss</span><span class="o">.</span><span class="n">computeMass</span><span class="p">(</span><span class="n">RotorDiam</span><span class="p">,</span><span class="n">RotorMass</span><span class="p">,</span><span class="n">RotorTorque</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gear</span><span class="o">.</span><span class="n">computeMass</span><span class="p">(</span><span class="n">iDesign</span><span class="p">,</span><span class="n">RotorTorque</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">computeMass</span><span class="p">(</span><span class="n">iDesign</span><span class="p">,</span><span class="n">MachineRating</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">)</span>
+
+        <span class="c"># overall mass   </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lss</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">bhMass</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">gear</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mechBrakeMass</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">vspdEtronicsMass</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">yawDrvMass</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mfTotalMass</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">econnectionsMass</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">hydrCoolingMass</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">nacelleCovMass</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">controlMass</span>
+
+
+    <span class="k">def</span> <span class="nf">computeCost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">RotorDiam</span><span class="p">,</span>    <span class="n">MachineRating</span><span class="p">,</span> <span class="n">RotorMass</span><span class="p">,</span> <span class="n">RotorSpeed</span><span class="p">,</span> \
+                      <span class="n">MaximumThrust</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">,</span> <span class="n">iDesign</span><span class="p">,</span>   <span class="n">offshore</span><span class="p">,</span> <span class="n">mainframeMass</span><span class="p">,</span> \
+                      <span class="n">crane</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">curr_yr</span><span class="o">=</span><span class="mi">2009</span><span class="p">,</span><span class="n">curr_mon</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute cost for a full wind turbine Nacelle using the NREL Cost and Scaling Model</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        RotorDiam : float</span>
+<span class="sd">          rotor diameter [m] of the turbine</span>
+<span class="sd">        MachineRating : float</span>
+<span class="sd">          Rated power [kW] for wind turbine</span>
+<span class="sd">        RotorMass : float</span>
+<span class="sd">          Mass of rotor [kg] of the turbine</span>
+<span class="sd">        RotorSpeed : float</span>
+<span class="sd">          Speed of rotor [rpm] at rated power</span>
+<span class="sd">        MaximumThrust : float</span>
+<span class="sd">          Maximum thrust [N] from rotor applied to nacelle</span>
+<span class="sd">        RotorTorque : float</span>
+<span class="sd">          Rated torque [N-m] of the turbine</span>
+<span class="sd">        iDesign : int</span>
+<span class="sd">          Drivetrain Design (1 - 3-staged geared, 2 - single-stage, 3 - multi-gen, 4 - direct drive)</span>
+<span class="sd">        offshore : int</span>
+<span class="sd">          Offshore status: 0 - onshore, 1 - shallow, 2 - transition, 3 - deep</span>
+<span class="sd">        mainframeMass : float</span>
+<span class="sd">          Mass of mainframe [kg]</span>
+<span class="sd">        crane : bool</span>
+<span class="sd">          Boolean for onboard crane</span>
+<span class="sd">        curr_yr : int</span>
+<span class="sd">          year of project start</span>
+<span class="sd">        curr_mon : int</span>
+<span class="sd">          month of project start</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c"># initialize input variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crane</span> <span class="o">=</span> <span class="n">crane</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainframeMass</span> <span class="o">=</span> <span class="n">mainframeMass</span>
+        
+        <span class="c"># Cost Escalators - obtained from ppi tables</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_yr</span> <span class="o">=</span> <span class="n">curr_yr</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_mon</span> <span class="o">=</span> <span class="n">curr_mon</span>
+        
+        <span class="n">bearingCostEsc</span>       <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_BRN&#39;</span><span class="p">)</span>
+        <span class="n">mechBrakeCostEsc</span>     <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_BRK&#39;</span><span class="p">)</span>
+        <span class="n">VspdEtronicsCostEsc</span>  <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_VSE&#39;</span><span class="p">)</span>
+        <span class="n">yawDrvBearingCostEsc</span> <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_YAW&#39;</span><span class="p">)</span>
+        <span class="n">nacelleCovCostEsc</span>    <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_NAC&#39;</span><span class="p">)</span>
+        <span class="n">hydrCoolingCostEsc</span>   <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_HYD&#39;</span><span class="p">)</span>
+        <span class="n">mainFrameCostEsc</span>     <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_MFM&#39;</span><span class="p">)</span>
+        <span class="n">econnectionsCostEsc</span>  <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_ELC&#39;</span><span class="p">)</span>
+
+        <span class="c"># These RD functions from spreadsheet don&#39;t quite form a continuous composite function</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="n">RotorDiam</span> <span class="o">&lt;=</span> <span class="mf">15.0</span><span class="p">):</span>
+            <span class="n">TowerTopDiam</span> <span class="o">=</span> <span class="mf">0.3</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">RotorDiam</span> <span class="o">&lt;=</span> <span class="mf">60.0</span><span class="p">):</span>
+            <span class="n">TowerTopDiam</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.07042</span><span class="o">*</span><span class="n">RotorDiam</span><span class="o">-</span><span class="mf">0.715</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">TowerTopDiam</span> <span class="o">=</span> <span class="p">(</span><span class="mf">12.29</span><span class="o">*</span><span class="n">RotorDiam</span><span class="o">+</span><span class="mi">2648</span><span class="p">)</span><span class="o">/</span><span class="mi">1000</span>
+        
+        <span class="c"># --- electrical connections</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">econnectionsCost</span> <span class="o">=</span> <span class="mf">40.0</span> <span class="o">*</span> <span class="n">MachineRating</span>  <span class="c"># 2002</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">econnectionsCost</span> <span class="o">*=</span> <span class="n">econnectionsCostEsc</span>
+        
+        <span class="c"># --- bearings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bearingMass</span> <span class="o">=</span> <span class="mf">0.00012266667</span> <span class="o">*</span> <span class="p">(</span><span class="n">RotorDiam</span> <span class="o">**</span> <span class="mf">3.5</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.00030360</span> <span class="o">*</span> <span class="p">(</span><span class="n">RotorDiam</span> <span class="o">**</span> <span class="mf">2.5</span><span class="p">)</span>
+        <span class="n">HousingMass</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bearingMass</span> 
+        <span class="n">brngSysCostFactor</span> <span class="o">=</span> <span class="mf">17.6</span> <span class="c"># $/kg</span>
+        <span class="n">Bearings2002</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bearingMass</span> <span class="o">*</span> <span class="n">brngSysCostFactor</span>
+        <span class="n">Housing2002</span>  <span class="o">=</span> <span class="n">HousingMass</span>      <span class="o">*</span> <span class="n">brngSysCostFactor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bearingsCost</span> <span class="o">=</span> <span class="p">(</span> <span class="n">Bearings2002</span> <span class="o">+</span> <span class="n">Housing2002</span> <span class="p">)</span> <span class="o">*</span> <span class="n">bearingCostEsc</span>
+        
+        <span class="c"># --- mechanical brake           </span>
+        <span class="n">mechBrakeCost2002</span> <span class="o">=</span> <span class="mf">1.9894</span> <span class="o">*</span> <span class="n">MachineRating</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.1141</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mechBrakeCost</span> <span class="o">=</span> <span class="n">mechBrakeCostEsc</span> <span class="o">*</span> <span class="n">mechBrakeCost2002</span>
+        
+        <span class="c"># --- variable-speed electronics           </span>
+        <span class="n">VspdEtronics2002</span> <span class="o">=</span> <span class="mf">79.32</span> <span class="o">*</span> <span class="n">MachineRating</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vspdEtronicsCost</span> <span class="o">=</span> <span class="n">VspdEtronics2002</span> <span class="o">*</span> <span class="n">VspdEtronicsCostEsc</span>
+
+        <span class="c"># --- yaw drive bearings</span>
+        <span class="n">YawDrvBearing2002</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span> <span class="mf">0.0339</span> <span class="o">*</span> <span class="n">RotorDiam</span> <span class="o">**</span> <span class="mf">2.9637</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yawDrvBearingCost</span> <span class="o">=</span> <span class="n">YawDrvBearing2002</span> <span class="o">*</span> <span class="n">yawDrvBearingCostEsc</span>
+        
+        <span class="c"># --- hydraulics, cooling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hydrCoolingCost</span> <span class="o">=</span> <span class="mf">12.0</span> <span class="o">*</span> <span class="n">MachineRating</span> <span class="c"># 2002</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hydrCoolingCost</span> <span class="o">*=</span> <span class="n">hydrCoolingCostEsc</span> 
+ 
+        <span class="c"># --- control system ---   </span>
+        <span class="n">initControlCost</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">35000</span><span class="p">,</span> <span class="mi">55900</span> <span class="p">]</span>  <span class="c"># land, off-shore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">controlCost</span> <span class="o">=</span> <span class="n">initControlCost</span><span class="p">[</span><span class="n">offshore</span><span class="p">]</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_CTL&#39;</span><span class="p">)</span>
+
+        <span class="c"># --- nacelle totals</span>
+        <span class="n">NacellePlatformsMass</span> <span class="o">=</span> <span class="o">.</span><span class="mi">125</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mainframeMass</span>
+        <span class="n">NacellePlatforms2002</span> <span class="o">=</span> <span class="mf">8.7</span> <span class="o">*</span> <span class="n">NacellePlatformsMass</span>
+        
+        <span class="c"># --- nacelle cover ---        </span>
+        <span class="n">nacelleCovCost2002</span> <span class="o">=</span> <span class="mf">11.537</span> <span class="o">*</span> <span class="n">MachineRating</span> <span class="o">+</span> <span class="p">(</span><span class="mf">3849.7</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nacelleCovCost</span> <span class="o">=</span> <span class="n">nacelleCovCostEsc</span> <span class="o">*</span> <span class="n">nacelleCovCost2002</span>
+        
+        <span class="c"># --- crane ---</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">crane</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">craneCost</span> <span class="o">=</span> <span class="mf">12000.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">craneCost</span> <span class="o">=</span> <span class="mf">0.0</span>
+            
+        <span class="c"># --- main frame ---</span>
+        <span class="c"># mfmCoeff[1,4] for different drivetrain configurations</span>
+        <span class="n">mfmCoeff</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="mf">9.4885</span><span class="p">,</span><span class="mf">303.96</span><span class="p">,</span><span class="mf">17.923</span><span class="p">,</span><span class="mf">627.28</span> <span class="p">]</span>
+        <span class="n">mfmExp</span>   <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="mf">1.9525</span><span class="p">,</span><span class="mf">1.0669</span><span class="p">,</span><span class="mf">1.6716</span><span class="p">,</span><span class="mf">0.8500</span> <span class="p">]</span>
+        
+        <span class="n">MainFrameCost2002</span> <span class="o">=</span> <span class="n">mfmCoeff</span><span class="p">[</span><span class="n">iDesign</span><span class="p">]</span> <span class="o">*</span> <span class="n">RotorDiam</span> <span class="o">**</span> <span class="n">mfmExp</span><span class="p">[</span><span class="n">iDesign</span><span class="p">]</span>
+        <span class="n">BaseHardware2002</span>  <span class="o">=</span> <span class="n">MainFrameCost2002</span> <span class="o">*</span> <span class="mf">0.7</span>
+        <span class="n">MainFrame2002</span> <span class="o">=</span> <span class="p">(</span> <span class="n">MainFrameCost2002</span>    <span class="o">+</span> 
+                          <span class="n">NacellePlatforms2002</span> <span class="o">+</span> 
+                          <span class="bp">self</span><span class="o">.</span><span class="n">craneCost</span>       <span class="o">+</span> <span class="c"># service crane </span>
+                          <span class="n">BaseHardware2002</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainFrameCost</span> <span class="o">=</span> <span class="n">MainFrame2002</span> <span class="o">*</span> <span class="n">mainFrameCostEsc</span>
+        
+        <span class="c"># compute cost for subcomponents</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lss</span><span class="o">.</span><span class="n">computeCost</span><span class="p">(</span><span class="n">RotorDiam</span><span class="p">,</span><span class="n">curr_yr</span><span class="p">,</span><span class="n">curr_mon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gear</span><span class="o">.</span><span class="n">computeCost</span><span class="p">(</span><span class="n">iDesign</span><span class="p">,</span><span class="n">MachineRating</span><span class="p">,</span><span class="n">curr_yr</span><span class="p">,</span><span class="n">curr_mon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">computeCost</span><span class="p">(</span><span class="n">iDesign</span><span class="p">,</span><span class="n">MachineRating</span><span class="p">,</span> <span class="n">curr_yr</span><span class="p">,</span><span class="n">curr_mon</span><span class="p">)</span>
+
+        <span class="c"># overall system cost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lss</span><span class="o">.</span><span class="n">cost</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">bearingsCost</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">gear</span><span class="o">.</span><span class="n">cost</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mechBrakeCost</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">cost</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">vspdEtronicsCost</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">yawDrvBearingCost</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mainFrameCost</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">econnectionsCost</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">hydrCoolingCost</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">nacelleCovCost</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">controlCost</span>
+
+    <span class="k">def</span> <span class="nf">getMass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the mass for the overall wind turbine nacelle assembly.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mass : float</span>
+<span class="sd">            Wind turbine overall nacelle assembly mass [kg]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span>
+        
+    <span class="k">def</span> <span class="nf">getCost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the cost for the overall wind turbine nacelle assembly.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cost : float</span>
+<span class="sd">            Wind turbine overall nacelle assembly cost [USD]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost</span>
+
+    <span class="k">def</span> <span class="nf">getNacelleComponentMasses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the mass for the overall wind turbine nacelle components.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        nacelleComponentMasses : float</span>
+<span class="sd">            Wind turbine nacelle masses [kg]: LSS, Bearings, Gearbox, Brakes, Generator, VS Electronics, Electrical Connections</span>
+<span class="sd">            Controls, Yaw Drive System, Mainframe, and Nacelle Cover</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nacelleComponentMasses</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lss</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bhMass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gear</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mechBrakeMass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">vspdEtronicsMass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">econnectionsMass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydrCoolingMass</span><span class="p">,</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">controlMass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yawDrvMass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mfTotalMass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nacelleCovMass</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nacelleComponentMasses</span>
+ 
+    <span class="k">def</span> <span class="nf">getNacelleComponentCosts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the cost for the overall wind turbine nacelle components.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        nacelleComponentCosts : float</span>
+<span class="sd">            Wind turbine nacelle costs [USD]: LSS, Bearings, Gearbox, Brakes, Generator, VS Electronics, Electrical Connections</span>
+<span class="sd">            Controls, Yaw Drive System, Mainframe, and Nacelle Cover</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nacelleComponentCosts</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lss</span><span class="o">.</span><span class="n">cost</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bearingsCost</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gear</span><span class="o">.</span><span class="n">cost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mechBrakeCost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">cost</span><span class="p">,</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">vspdEtronicsCost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">econnectionsCost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydrCoolingCost</span><span class="p">,</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">controlCost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yawDrvBearingCost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mainFrameCost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nacelleCovCost</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nacelleComponentCosts</span>
+                
+    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;Nacelle Components&quot;</span>
+        <span class="k">print</span> <span class="s">&#39;  lss           </span><span class="si">%6.4f</span><span class="s"> K$  </span><span class="si">%8.4f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lss</span><span class="o">.</span><span class="n">cost</span>         <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lss</span><span class="o">.</span><span class="n">mass</span>        <span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  bearings      </span><span class="si">%6.4f</span><span class="s"> K$  </span><span class="si">%8.4f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bearingsCost</span>     <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bhMass</span>          <span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  gear          </span><span class="si">%6.4f</span><span class="s"> K$  </span><span class="si">%8.4f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gear</span><span class="o">.</span><span class="n">cost</span>        <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gear</span><span class="o">.</span><span class="n">mass</span>       <span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  mechBrake     </span><span class="si">%6.4f</span><span class="s"> K$  </span><span class="si">%8.4f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mechBrakeCost</span>    <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mechBrakeMass</span>   <span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  gen           </span><span class="si">%6.4f</span><span class="s"> K$  </span><span class="si">%8.4f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">cost</span>         <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">mass</span>        <span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  vspdEtronics  </span><span class="si">%6.4f</span><span class="s"> K$  </span><span class="si">%8.4f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vspdEtronicsCost</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vspdEtronicsMass</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  yawDrvBearing </span><span class="si">%6.4f</span><span class="s"> K$  </span><span class="si">%8.4f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yawDrvBearingCost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yawDrvMass</span>      <span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  mainFrame     </span><span class="si">%6.4f</span><span class="s"> K$  </span><span class="si">%8.4f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainFrameCost</span>    <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mfTotalMass</span>     <span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  econnections  </span><span class="si">%6.4f</span><span class="s"> K$  </span><span class="si">%8.4f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">econnectionsCost</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">econnectionsMass</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  hydrCooling   </span><span class="si">%6.4f</span><span class="s"> K$  </span><span class="si">%8.4f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hydrCoolingCost</span>  <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydrCoolingMass</span> <span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  nacelleCov    </span><span class="si">%6.4f</span><span class="s"> K$  </span><span class="si">%8.4f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nacelleCovCost</span>   <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nacelleCovMass</span>  <span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  controls      </span><span class="si">%6.4f</span><span class="s"> K$  </span><span class="si">%8.4f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controlCost</span>      <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">controlMass</span>  <span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;NACELLE TOTAL   </span><span class="si">%6.4f</span><span class="s"> K$  </span><span class="si">%8.4f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cost</span>             <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span>            <span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39; &#39;</span>       
+        
+<span class="c">#-------------------------------------------------------------------------------</span>
+        </div>
+<span class="k">def</span> <span class="nf">example</span><span class="p">():</span>
+  
+    <span class="c"># simple test of module</span>
+
+    <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span>   <span class="o">=</span> <span class="mi">2002</span>
+    <span class="n">ppi</span><span class="o">.</span><span class="n">ref_mon</span>  <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">curr_yr</span> <span class="o">=</span> <span class="mi">2009</span>
+    <span class="n">curr_mon</span> <span class="o">=</span>  <span class="mi">12</span>
+    <span class="n">ppi</span><span class="o">.</span><span class="n">curr_yr</span> <span class="o">=</span> <span class="n">curr_yr</span>
+    <span class="n">ppi</span><span class="o">.</span><span class="n">curr_mon</span> <span class="o">=</span> <span class="n">curr_mon</span>
+    
+    <span class="n">nac</span> <span class="o">=</span> <span class="n">csmNacelle</span><span class="p">()</span>
+    
+    <span class="n">RotorDiam</span> <span class="o">=</span> <span class="mf">126.0</span>
+    <span class="n">MachineRating</span> <span class="o">=</span> <span class="mf">5000.0</span>
+    <span class="n">RotorMass</span> <span class="o">=</span> <span class="mf">123193.3010</span>
+    <span class="n">RotorSpeed</span> <span class="o">=</span> <span class="mf">12.1260909</span>
+    <span class="n">MaximumThrust</span> <span class="o">=</span> <span class="mf">500930.0837</span>
+    <span class="n">RotorTorque</span> <span class="o">=</span> <span class="mf">4365248.7375</span>
+    <span class="n">iDesign</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">offshore</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">crane</span><span class="o">=</span><span class="bp">True</span>
+    <span class="n">AdvancedBedplate</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">verbose</span><span class="o">=</span> <span class="mi">1</span>
+    <span class="n">nac</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">RotorDiam</span><span class="p">,</span> <span class="n">MachineRating</span><span class="p">,</span> <span class="n">RotorMass</span><span class="p">,</span> <span class="n">RotorSpeed</span><span class="p">,</span> \
+                      <span class="n">MaximumThrust</span><span class="p">,</span> <span class="n">RotorTorque</span><span class="p">,</span> <span class="n">iDesign</span><span class="p">,</span> <span class="n">offshore</span><span class="p">,</span> \
+                      <span class="n">crane</span><span class="p">,</span> <span class="n">AdvancedBedplate</span><span class="p">,</span> <span class="n">curr_yr</span><span class="p">,</span> <span class="n">curr_mon</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>         
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c">#TODO - update based on changes to csm Turbine</span>
+
+    <span class="n">example</span><span class="p">()</span> 
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../index.html">NREL_CSM 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, NREL.
+      Last updated on Sep 21, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

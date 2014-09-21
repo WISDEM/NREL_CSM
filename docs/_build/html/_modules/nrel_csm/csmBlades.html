@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nrel_csm.csmBlades &mdash; NREL_CSM 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nrel.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="NREL_CSM 0.1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../index.html">NREL_CSM 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nrel_csm.csmBlades</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">csmBlades.py</span>
+
+<span class="sd">Created by George Scott on 2012-08-01.</span>
+<span class="sd">Modified by Katherine Dykes 2012.</span>
+<span class="sd">Copyright (c) NREL. All rights reserved.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">config</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="csmBlades"><a class="viewcode-back" href="../../documentation.html#nrel_csm.csmBlades.csmBlades">[docs]</a><span class="k">class</span> <span class="nc">csmBlades</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; csmBlades class</span>
+<span class="sd">    </span>
+<span class="sd">          This class provides a representation of a wind turbine blade.</span>
+<span class="sd">            </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the parameters for the wind turbine blade</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mass : float</span>
+<span class="sd">          Individual wind turbine blade mass [kg]</span>
+<span class="sd">        cost : float</span>
+<span class="sd">          individual wind turbine blade cost [USD]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diam</span><span class="o">=</span><span class="mf">126.0</span><span class="p">,</span><span class="n">advanced</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">curr_yr</span><span class="o">=</span><span class="mi">2009</span><span class="p">,</span><span class="n">curr_mon</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute mass and cost for a single wind turbine blade by calling computeMass and computeCost</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        diam : float</span>
+<span class="sd">          rotor diameter [m] of the turbine</span>
+<span class="sd">        advanced : bool</span>
+<span class="sd">          advanced blade configuration boolean</span>
+<span class="sd">        curr_yr : int</span>
+<span class="sd">          year of project start</span>
+<span class="sd">        curr_mon : int</span>
+<span class="sd">          month of project start</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeMass</span><span class="p">(</span><span class="n">diam</span><span class="p">,</span><span class="n">advanced</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeCost</span><span class="p">(</span><span class="n">diam</span><span class="p">,</span><span class="n">advanced</span><span class="p">,</span><span class="n">curr_yr</span><span class="p">,</span><span class="n">curr_mon</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">print</span> <span class="s">&#39;  blade        </span><span class="si">%6.3f</span><span class="s"> K$  </span><span class="si">%8.3f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getCost</span><span class="p">()</span>   <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">getMass</span><span class="p">())</span>
+            <span class="k">print</span> <span class="s">&#39;  blades        </span><span class="si">%6.3f</span><span class="s"> K$  </span><span class="si">%8.3f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getCost</span><span class="p">()</span><span class="o">*</span><span class="mi">3</span>   <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">getMass</span><span class="p">()</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">computeMass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">diam</span><span class="p">,</span><span class="n">advanced</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute mass for a single wind turbine blade using NREL cost and scaling model</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        diam : float</span>
+<span class="sd">          rotor diameter [m] of the turbine</span>
+<span class="sd">        advanced : bool</span>
+<span class="sd">          advanced blade configuration boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+         
+        <span class="k">if</span> <span class="p">(</span><span class="n">advanced</span> <span class="o">==</span> <span class="bp">True</span><span class="p">):</span>
+            <span class="n">massCoeff</span> <span class="o">=</span> <span class="mf">0.4948</span>
+            <span class="n">massExp</span>   <span class="o">=</span> <span class="mf">2.5300</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">massCoeff</span> <span class="o">=</span> <span class="mf">0.1452</span> 
+            <span class="n">massExp</span>   <span class="o">=</span> <span class="mf">2.9158</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="p">(</span><span class="n">massCoeff</span><span class="o">*</span><span class="p">(</span><span class="n">diam</span><span class="o">/</span><span class="mf">2.0000</span><span class="p">)</span><span class="o">**</span><span class="n">massExp</span><span class="p">)</span>
+      
+    <span class="k">def</span> <span class="nf">computeCost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">diam</span><span class="p">,</span><span class="n">advanced</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">curr_yr</span><span class="o">=</span><span class="mi">2009</span><span class="p">,</span><span class="n">curr_mon</span><span class="o">=</span><span class="mi">9</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute cost for a single wind turbine blade using NREL cost and scaling model</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        diam : float</span>
+<span class="sd">          rotor diameter [m] of the turbine</span>
+<span class="sd">        advanced : bool</span>
+<span class="sd">          advanced blade configuration boolean</span>
+<span class="sd">        curr_yr : int</span>
+<span class="sd">          year of project start</span>
+<span class="sd">        curr_mon : int</span>
+<span class="sd">          month of project start</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_yr</span> <span class="o">=</span> <span class="n">curr_yr</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_mon</span> <span class="o">=</span> <span class="n">curr_mon</span>
+
+        <span class="n">ppi_labor</span>  <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_BLL&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">advanced</span> <span class="o">==</span> <span class="bp">True</span><span class="p">):</span>
+            <span class="n">ref_yr</span> <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span>
+            <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span> <span class="o">=</span> <span class="mi">2003</span>
+            <span class="n">ppi_mat</span>   <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_BLA&#39;</span><span class="p">)</span>
+            <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span> <span class="o">=</span> <span class="n">ref_yr</span>
+            <span class="n">slopeR3</span>   <span class="o">=</span> <span class="mf">0.4019376</span>
+            <span class="n">intR3</span>     <span class="o">=</span> <span class="o">-</span><span class="mf">21051.045983</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ppi_mat</span>   <span class="o">=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_BLD&#39;</span><span class="p">)</span>
+            <span class="n">slopeR3</span>   <span class="o">=</span> <span class="mf">0.4019376</span>
+            <span class="n">intR3</span>     <span class="o">=</span> <span class="o">-</span><span class="mf">955.24267</span>
+            
+        <span class="n">laborCoeff</span>    <span class="o">=</span> <span class="mf">2.7445</span>
+        <span class="n">laborExp</span>      <span class="o">=</span> <span class="mf">2.5025</span>
+        
+        <span class="n">bladeCostCurrent</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">slopeR3</span><span class="o">*</span><span class="p">(</span><span class="n">diam</span><span class="o">/</span><span class="mf">2.0000</span><span class="p">)</span><span class="o">**</span><span class="mf">3.0000</span> <span class="o">+</span> <span class="p">(</span><span class="n">intR3</span><span class="p">))</span><span class="o">*</span><span class="n">ppi_mat</span> <span class="o">+</span> \
+                                  <span class="p">(</span><span class="n">laborCoeff</span><span class="o">*</span><span class="p">(</span><span class="n">diam</span><span class="o">/</span><span class="mf">2.0000</span><span class="p">)</span><span class="o">**</span><span class="n">laborExp</span><span class="p">)</span><span class="o">*</span><span class="n">ppi_labor</span>    <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0000</span><span class="o">-</span><span class="mf">0.2800</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="n">bladeCostCurrent</span>
+
+    <span class="k">def</span> <span class="nf">getMass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the mass for the wind turbine blade.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mass : float</span>
+<span class="sd">            Wind turbine blade mass [kg]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span>
+        
+    <span class="k">def</span> <span class="nf">getCost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the cost for the wind turbine blade.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cost : float</span>
+<span class="sd">            Wind turbine blade cost [USD]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost</span>
+        
+<span class="c">#-------------------------------------------------------------------------------        </span>
+</div>
+<span class="k">def</span> <span class="nf">example</span><span class="p">():</span>
+  
+    <span class="c"># simple test of module</span>
+    
+    <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span>   <span class="o">=</span> <span class="mi">2002</span>
+    <span class="n">ppi</span><span class="o">.</span><span class="n">ref_mon</span>  <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">curr_yr</span>  <span class="o">=</span> <span class="mi">2009</span>
+    <span class="n">curr_mon</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">ppi</span><span class="o">.</span><span class="n">curr_yr</span> <span class="o">=</span> <span class="n">curr_yr</span>
+    <span class="n">ppi</span><span class="o">.</span><span class="n">curr_mon</span> <span class="o">=</span> <span class="n">curr_mon</span>
+    
+    <span class="n">blades</span> <span class="o">=</span> <span class="n">csmBlades</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">&quot;Conventional blade design:&quot;</span>
+    <span class="n">blades</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="mf">126.0</span><span class="p">,</span><span class="bp">False</span><span class="p">,</span><span class="n">curr_yr</span><span class="p">,</span> <span class="n">curr_mon</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Advanced blade design:&quot;</span>
+    <span class="n">blades</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="mf">126.0</span><span class="p">,</span><span class="bp">True</span><span class="p">,</span><span class="n">curr_yr</span><span class="p">,</span> <span class="n">curr_mon</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c">#TODO - update based on changes to csm Turbine</span>
+
+    <span class="n">example</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../index.html">NREL_CSM 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, NREL.
+      Last updated on Sep 21, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

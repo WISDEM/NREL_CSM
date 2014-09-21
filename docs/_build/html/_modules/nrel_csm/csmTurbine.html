@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nrel_csm.csmTurbine &mdash; NREL_CSM 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nrel.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="NREL_CSM 0.1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../index.html">NREL_CSM 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nrel_csm.csmTurbine</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">csmTurbine.py</span>
+
+<span class="sd">Created by George Scott on 2012-08-01.</span>
+<span class="sd">Modified by Katherine Dykes 2012.</span>
+<span class="sd">Copyright (c) NREL. All rights reserved.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">config</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">csmBlades</span> <span class="kn">import</span> <span class="n">csmBlades</span>
+<span class="kn">from</span> <span class="nn">csmHub</span> <span class="kn">import</span> <span class="n">csmHub</span>
+<span class="kn">from</span> <span class="nn">csmNacelle</span> <span class="kn">import</span> <span class="n">csmNacelle</span>
+<span class="kn">from</span> <span class="nn">csmTower</span> <span class="kn">import</span> <span class="n">csmTower</span>
+        
+<span class="c">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="csmTurbine"><a class="viewcode-back" href="../../documentation.html#nrel_csm.csmTurbine.csmTurbine">[docs]</a><span class="k">class</span> <span class="nc">csmTurbine</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Turbine class </span>
+<span class="sd">        inputs are adjusted to be only those needed for mass and cost calculations; these include:</span>
+<span class="sd">            hubHeight=90.0, machineRating=5000.0, maxTipSpd=80.0, rotorDiam=126.0, dtDesign=1, nblades = 3, maxEfficiency=0.910201, ratedWindSpd=12.0, idepth=1)       </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">           Initialize properties for operations and maintenance costs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c"># Initialize the components of the turbine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blades</span>  <span class="o">=</span> <span class="n">csmBlades</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hub</span>     <span class="o">=</span> <span class="n">csmHub</span><span class="p">()</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">nac</span>     <span class="o">=</span> <span class="n">csmNacelle</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tower</span>   <span class="o">=</span> <span class="n">csmTower</span><span class="p">()</span>
+
+        <span class="k">pass</span>
+    
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hubHeight</span><span class="o">=</span><span class="mf">90.0</span><span class="p">,</span> <span class="n">machineRating</span><span class="o">=</span><span class="mf">5000.0</span><span class="p">,</span> <span class="n">maxTipSpd</span><span class="o">=</span><span class="mf">80.0</span><span class="p">,</span> <span class="n">rotorDiam</span><span class="o">=</span><span class="mf">126.0</span><span class="p">,</span> <span class="n">dtDesign</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nblades</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> \
+                       <span class="n">maxEfficiency</span><span class="o">=</span><span class="mf">0.90201</span><span class="p">,</span> <span class="n">ratedWindSpd</span> <span class="o">=</span> <span class="mf">11.5064</span><span class="p">,</span> <span class="n">altitude</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">thrustCoeff</span><span class="o">=</span><span class="mf">0.50</span><span class="p">,</span> <span class="n">seaDepth</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">crane</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">advancedBlade</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> \
+                       <span class="n">advancedBedplate</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">advancedTower</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="n">year</span> <span class="o">=</span> <span class="mi">2009</span><span class="p">,</span> <span class="n">month</span> <span class="o">=</span> <span class="mi">12</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the turbine component masses and costs using the NREL Cost and Scaling Model method.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        hubHeight : float</span>
+<span class="sd">          hub height [m] of the wind turbines at the site</span>
+<span class="sd">        machineRating : float</span>
+<span class="sd">          machine rating [kW] for the wind turbine at the site</span>
+<span class="sd">        maxTipSpd : float</span>
+<span class="sd">          maximum allowable tip speed [m/s] for the wind turbine</span>
+<span class="sd">        rotorDiam : float</span>
+<span class="sd">          rotor diameter [m] of the wind turbines at the site</span>
+<span class="sd">        dtDesign : int</span>
+<span class="sd">          drivetrain design [1 = 3-stage geared, 2 = single-stage, 3 = multi-gen, 4 = direct drive]</span>
+<span class="sd">        nblades : int</span>
+<span class="sd">          number of rotor blades</span>
+<span class="sd">        maxEfficiency : float</span>
+<span class="sd">          maximum efficiency of the drivetrain</span>
+<span class="sd">        ratedWindSpd : float</span>
+<span class="sd">          wind speed at which turbine produced rated power [m/s]</span>
+<span class="sd">        altitude : float</span>
+<span class="sd">          altitude [m] of wind farm above sea level for an onshore plant</span>
+<span class="sd">        seaDepth : float</span>
+<span class="sd">          sea depth [m] which is 0.0 or negative for an onshore project</span>
+<span class="sd">        crane : bool</span>
+<span class="sd">          boolean for the presence of an on-board service crane</span>
+<span class="sd">        advancedBlade : bool</span>
+<span class="sd">          boolean for the presence of an advanced wind turbine blade configuration</span>
+<span class="sd">        advancedBedplate : int</span>
+<span class="sd">          bedplate design for standard, modular or integrated</span>
+<span class="sd">        year : int</span>
+<span class="sd">          project start year [year]</span>
+<span class="sd">        month : int</span>
+<span class="sd">          project start month [month]</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># input variable assignment</span>
+        <span class="k">if</span> <span class="n">seaDepth</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>            <span class="c"># type of plant # 1: Land, 2: &lt; 30m, 3: &lt; 60m, 4: &gt;= 60m</span>
+            <span class="n">iDepth</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">seaDepth</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="n">iDepth</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">seaDepth</span> <span class="o">&lt;</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">iDepth</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">iDepth</span> <span class="o">=</span> <span class="mi">4</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">iDepth</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>   <span class="c"># TODO - crane assignment should be an input</span>
+            <span class="n">offshore</span>  <span class="o">=</span> <span class="mi">0</span>  <span class="c"># 0 = onshore</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">offshore</span>  <span class="o">=</span> <span class="mi">1</span>  <span class="c"># 1 = offshore</span>
+
+        <span class="c"># initialize ppi index calculator</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_yr</span> <span class="o">=</span> <span class="n">year</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_mon</span> <span class="o">=</span> <span class="n">month</span>
+
+        <span class="c"># Compute air density (todo: this is redundant from csm AEP, calculation of environmental variables of interest should probably be its own model)        </span>
+        <span class="n">ssl_pa</span>     <span class="o">=</span> <span class="mi">101300</span>  <span class="c"># std sea-level pressure in Pa</span>
+        <span class="n">gas_const</span>  <span class="o">=</span> <span class="mf">287.15</span>  <span class="c"># gas constant for air in J/kg/K</span>
+        <span class="n">gravity</span>    <span class="o">=</span> <span class="mf">9.80665</span> <span class="c"># standard gravity in m/sec/sec</span>
+        <span class="n">lapse_rate</span> <span class="o">=</span> <span class="mf">0.0065</span>  <span class="c"># temp lapse rate in K/m</span>
+        <span class="n">ssl_temp</span>   <span class="o">=</span> <span class="mf">288.15</span>  <span class="c"># std sea-level temp in K</span>
+        
+        <span class="n">airDensity</span> <span class="o">=</span> <span class="p">(</span><span class="n">ssl_pa</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">((</span><span class="n">lapse_rate</span><span class="o">*</span><span class="p">(</span><span class="n">altitude</span> <span class="o">+</span> <span class="n">hubHeight</span><span class="p">))</span><span class="o">/</span><span class="n">ssl_temp</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="n">gravity</span><span class="o">/</span><span class="p">(</span><span class="n">lapse_rate</span><span class="o">*</span><span class="n">gas_const</span><span class="p">)))</span> <span class="o">/</span> \
+            <span class="p">(</span><span class="n">gas_const</span><span class="o">*</span><span class="p">(</span><span class="n">ssl_temp</span><span class="o">-</span><span class="n">lapse_rate</span><span class="o">*</span><span class="p">(</span><span class="n">altitude</span> <span class="o">+</span> <span class="n">hubHeight</span><span class="p">)))</span>
+
+        <span class="c"># calaculate derivative input parameters for nacelle calculations       # todo - these should come from AEP/rotor module</span>
+        <span class="n">ratedHubPower</span>  <span class="o">=</span> <span class="n">machineRating</span> <span class="o">/</span> <span class="n">maxEfficiency</span> 
+        <span class="n">rotorSpeed</span>     <span class="o">=</span> <span class="p">(</span><span class="n">maxTipSpd</span><span class="o">/</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">rotorDiam</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mf">60.0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">))</span>
+        <span class="n">maximumThrust</span>  <span class="o">=</span> <span class="n">airDensity</span> <span class="o">*</span> <span class="n">thrustCoeff</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">rotorDiam</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span> <span class="p">(</span><span class="n">ratedWindSpd</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span> <span class="o">/</span> <span class="mf">8.</span>
+
+        <span class="n">rotorTorque</span> <span class="o">=</span> <span class="n">ratedHubPower</span><span class="o">/</span><span class="p">(</span><span class="n">rotorSpeed</span><span class="o">*</span><span class="p">(</span><span class="n">pi</span><span class="o">/</span><span class="mi">30</span><span class="p">))</span><span class="o">*</span><span class="mi">1000</span>   <span class="c"># NREL internal version</span>
+
+        <span class="c"># sub-component computations for mass, cost and dimensions          </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blades</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">rotorDiam</span><span class="p">,</span><span class="n">advancedBlade</span><span class="p">,</span><span class="n">year</span><span class="p">,</span><span class="n">month</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blades</span><span class="o">.</span><span class="n">getMass</span><span class="p">(),</span> <span class="n">rotorDiam</span><span class="p">,</span><span class="n">nblades</span><span class="p">,</span><span class="n">year</span><span class="p">,</span><span class="n">month</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rotorMass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blades</span><span class="o">.</span><span class="n">getMass</span><span class="p">()</span> <span class="o">*</span> <span class="n">nblades</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">getMass</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rotorCost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blades</span><span class="o">.</span><span class="n">getCost</span><span class="p">()</span> <span class="o">*</span> <span class="n">nblades</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">getCost</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nac</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">rotorDiam</span><span class="p">,</span> <span class="n">machineRating</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotorMass</span><span class="p">,</span> <span class="n">rotorSpeed</span><span class="p">,</span> \
+                      <span class="n">maximumThrust</span><span class="p">,</span> <span class="n">rotorTorque</span><span class="p">,</span> <span class="n">dtDesign</span><span class="p">,</span> <span class="n">offshore</span><span class="p">,</span> \
+                      <span class="n">crane</span><span class="p">,</span> <span class="n">advancedBedplate</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tower</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">rotorDiam</span><span class="p">,</span> <span class="n">hubHeight</span><span class="p">,</span> <span class="n">advancedTower</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">)</span>        
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">rotorCost</span> <span class="o">+</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">nac</span><span class="o">.</span><span class="n">cost</span> <span class="o">+</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">tower</span><span class="o">.</span><span class="n">cost</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">marCost</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">offshore</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span> <span class="c"># offshore - add marinization - NOTE: includes Foundation cost (not included in CSM.xls)</span>
+            <span class="n">marCoeff</span> <span class="o">=</span> <span class="mf">0.10</span> <span class="c"># 10%</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">marCost</span> <span class="o">=</span> <span class="n">marCoeff</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">marCost</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">rotorMass</span> <span class="o">+</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">nac</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">tower</span><span class="o">.</span><span class="n">mass</span>
+
+    <span class="k">def</span> <span class="nf">getMass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the overall turbine mass.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mass : float</span>
+<span class="sd">            Total mass for wind turbine [kg]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span>
+        
+    <span class="k">def</span> <span class="nf">getCost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the turbine capital costs for a single turbine.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cost : float</span>
+<span class="sd">            Turbine capital costs [USD]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost</span>
+
+    <span class="k">def</span> <span class="nf">cm_print</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c"># print cost and mass of components</span>
+        <span class="k">print</span> <span class="s">&#39;Turbine Components Costs&#39;</span>       
+        <span class="k">print</span> <span class="s">&#39;  Rotor      </span><span class="si">%9.2f</span><span class="s"> $K </span><span class="si">%9.2f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rotorCost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotorMass</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  Nacelle    </span><span class="si">%9.2f</span><span class="s"> $K </span><span class="si">%9.2f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nac</span><span class="o">.</span><span class="n">cost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nac</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  Tower      </span><span class="si">%9.2f</span><span class="s"> $K </span><span class="si">%9.2f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tower</span><span class="o">.</span><span class="n">cost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tower</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;  Marinization (for offshore) </span><span class="si">%9.2f</span><span class="s"> $K&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marCost</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;TURBINE TOTAL </span><span class="si">%9.2f</span><span class="s"> $K </span><span class="si">%9.2f</span><span class="s"> kg&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+        <span class="k">print</span>        
+
+<span class="c"># ------------------------------------------------------------</span>
+</div>
+<span class="k">def</span> <span class="nf">example</span><span class="p">():</span>
+
+    <span class="c"># simple test of module</span>
+
+    <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span>   <span class="o">=</span> <span class="mi">2002</span>
+    <span class="n">ppi</span><span class="o">.</span><span class="n">ref_mon</span>  <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="mi">2009</span>
+    <span class="n">month</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">ppi</span><span class="o">.</span><span class="n">curr_yr</span> <span class="o">=</span> <span class="n">year</span>
+    <span class="n">ppi</span><span class="o">.</span><span class="n">curr_mon</span> <span class="o">=</span> <span class="n">month</span>
+
+    <span class="n">hubHeight</span> <span class="o">=</span> <span class="mf">90.0</span>
+    <span class="n">machineRating</span> <span class="o">=</span> <span class="mf">5000.0</span>
+    <span class="n">maxTipSpd</span> <span class="o">=</span> <span class="mf">80.0</span>
+    <span class="n">rotorDiam</span> <span class="o">=</span> <span class="mf">126.0</span>
+    <span class="n">dtDesign</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">nblades</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">maxEfficiency</span> <span class="o">=</span> <span class="mf">0.90201</span>
+    <span class="n">ratedWindSpd</span> <span class="o">=</span> <span class="mf">11.5064</span>
+    <span class="n">altitude</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">thrustCoeff</span> <span class="o">=</span> <span class="mf">0.50</span>
+    <span class="n">seaDepth</span> <span class="o">=</span> <span class="mf">20.0</span>
+    <span class="n">crane</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">advancedBlade</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">advancedBedplate</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">advancedTower</span> <span class="o">=</span> <span class="bp">False</span>
+    
+    <span class="n">turb</span> <span class="o">=</span> <span class="n">csmTurbine</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">&quot;Offshore Configuration 5 MW turbine&quot;</span>
+    <span class="n">turb</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">hubHeight</span><span class="p">,</span> <span class="n">machineRating</span><span class="p">,</span> <span class="n">maxTipSpd</span><span class="p">,</span> <span class="n">rotorDiam</span><span class="p">,</span> <span class="n">dtDesign</span><span class="p">,</span> <span class="n">nblades</span><span class="p">,</span> \
+                       <span class="n">maxEfficiency</span><span class="p">,</span> <span class="n">ratedWindSpd</span><span class="p">,</span> <span class="n">altitude</span><span class="p">,</span> <span class="n">thrustCoeff</span><span class="p">,</span> <span class="n">seaDepth</span><span class="p">,</span> <span class="n">crane</span><span class="p">,</span> <span class="n">advancedBlade</span><span class="p">,</span> \
+                       <span class="n">advancedBedplate</span><span class="p">,</span> <span class="n">advancedTower</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">)</span>
+    <span class="n">turb</span><span class="o">.</span><span class="n">cm_print</span><span class="p">()</span>
+    <span class="n">turb</span><span class="o">.</span><span class="n">nac</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c">#TODO - update based on changes to csm Turbine</span>
+
+    <span class="n">example</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../index.html">NREL_CSM 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, NREL.
+      Last updated on Sep 21, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

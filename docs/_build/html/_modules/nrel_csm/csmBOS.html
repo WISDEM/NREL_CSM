@@ -1,0 +1,339 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nrel_csm.csmBOS &mdash; NREL_CSM 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nrel.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="NREL_CSM 0.1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../index.html">NREL_CSM 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nrel_csm.csmBOS</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">csmPowerCurve.py</span>
+<span class="sd">    </span>
+<span class="sd">Created by George Scott 2012</span>
+<span class="sd">Modified  by Katherine Dykes 2012</span>
+<span class="sd">Copyright (c)  NREL. All rights reserved.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">config</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">csmFoundation</span> <span class="kn">import</span> <span class="n">csmFoundation</span>
+
+<div class="viewcode-block" id="csmBOS"><a class="viewcode-back" href="../../documentation.html#nrel_csm.csmBOS.csmBOS">[docs]</a><span class="k">class</span> <span class="nc">csmBOS</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot; NREL Cost and Scaling Balance of Station cost model. &quot;&quot;&quot;</span>
+ 
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">           Initialize properties for balance of plant costs including default inputs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">fdn</span> <span class="o">=</span> <span class="n">csmFoundation</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transportation</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roadsCivil</span>     <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">portStaging</span>    <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">installation</span>   <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">electrical</span>     <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">engPermits</span>     <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pai</span>            <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scour</span>          <span class="o">=</span> <span class="mf">0.0</span>
+        
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">seaDepth</span><span class="p">,</span><span class="n">machineRating</span><span class="p">,</span><span class="n">hubHt</span><span class="p">,</span><span class="n">rtrDiam</span><span class="p">,</span><span class="n">tcc</span><span class="p">,</span> <span class="n">turbine_number</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the balance of station costs for a wind plant using the NREL Cost and Scaling Model method.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        seaDepth : float</span>
+<span class="sd">          sea depth [m] which is 0.0 or negative for an onshore project</span>
+<span class="sd">        machineRating : float</span>
+<span class="sd">          machine rating [kW] for the wind turbine at the site</span>
+<span class="sd">        hubHt : float</span>
+<span class="sd">          hub height [m] of the wind turbines at the site</span>
+<span class="sd">        rtrDiam : float</span>
+<span class="sd">          rotor diameter [m] of the wind turbines at the site</span>
+<span class="sd">        tcc : float</span>
+<span class="sd">          turbine capital costs [USD] for a single wind turbine in the project</span>
+<span class="sd">        year : int</span>
+<span class="sd">          project start year [year]</span>
+<span class="sd">        month : int</span>
+<span class="sd">          project start month [month]</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">lPrmtsCostCoeff1</span> <span class="o">=</span> <span class="mf">9.94E-04</span> 
+        <span class="n">lPrmtsCostCoeff2</span> <span class="o">=</span> <span class="mf">20.31</span> 
+        <span class="n">oPrmtsCostFactor</span> <span class="o">=</span> <span class="mf">37.0</span> <span class="c"># $/kW (2003)</span>
+        <span class="n">scourCostFactor</span> <span class="o">=</span>  <span class="mf">55.0</span> <span class="c"># $/kW (2003)</span>
+        <span class="n">ptstgCostFactor</span> <span class="o">=</span>  <span class="mf">20.0</span> <span class="c"># $/kW (2003)</span>
+        <span class="n">ossElCostFactor</span> <span class="o">=</span> <span class="mf">260.0</span> <span class="c"># $/kW (2003) shallow</span>
+        <span class="n">ostElCostFactor</span> <span class="o">=</span> <span class="mf">290.0</span> <span class="c"># $/kW (2003) transitional</span>
+        <span class="n">ostSTransFactor</span>  <span class="o">=</span>  <span class="mf">25.0</span> <span class="c"># $/kW (2003)</span>
+        <span class="n">ostTTransFactor</span>  <span class="o">=</span>  <span class="mf">77.0</span> <span class="c"># $/kW (2003)</span>
+        <span class="n">osInstallFactor</span>  <span class="o">=</span> <span class="mf">100.0</span> <span class="c"># $/kW (2003) shallow &amp; trans</span>
+        <span class="n">suppInstallFactor</span> <span class="o">=</span> <span class="mf">330.0</span> <span class="c"># $/kW (2003) trans additional</span>
+        <span class="n">paiCost</span>         <span class="o">=</span> <span class="mf">60000.0</span> <span class="c"># per turbine</span>
+        
+        <span class="n">suretyBRate</span>     <span class="o">=</span> <span class="mf">0.03</span>  <span class="c"># 3% of ICC</span>
+        <span class="n">suretyBond</span>      <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="c">#set variables</span>
+        <span class="k">if</span> <span class="n">seaDepth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>            <span class="c"># type of plant # 1: Land, 2: &lt; 30m, 3: &lt; 60m, 4: &gt;= 60m</span>
+            <span class="n">iDepth</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">seaDepth</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="n">iDepth</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">seaDepth</span> <span class="o">&lt;</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">iDepth</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">iDepth</span> <span class="o">=</span> <span class="mi">4</span>
+
+        <span class="c"># foundation cost calculations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fdn</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">machineRating</span><span class="p">,</span> <span class="n">hubHt</span><span class="p">,</span> <span class="n">rtrDiam</span><span class="p">,</span> <span class="n">seaDepth</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">)</span>
+
+        <span class="c"># initialize self.ppi index calculator</span>
+        <span class="k">if</span> <span class="n">iDepth</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ref_yr</span>  <span class="o">=</span> <span class="mi">2002</span>                   
+            <span class="n">ref_mon</span> <span class="o">=</span>    <span class="mi">9</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ref_yr</span> <span class="o">=</span> <span class="mi">2003</span>
+            <span class="n">ref_mon</span> <span class="o">=</span> <span class="mi">9</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span> <span class="o">=</span> <span class="n">ref_yr</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">ref_mon</span> <span class="o">=</span> <span class="n">ref_mon</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_yr</span> <span class="o">=</span> <span class="n">year</span>
+        <span class="n">ppi</span><span class="o">.</span><span class="n">curr_mon</span> <span class="o">=</span> <span class="n">month</span>
+        
+        <span class="c"># cost calculations</span>
+        <span class="n">tpC1</span>  <span class="o">=</span><span class="mf">0.00001581</span>
+        <span class="n">tpC2</span>  <span class="o">=-</span><span class="mf">0.0375</span>
+        <span class="n">tpInt</span> <span class="o">=</span><span class="mf">54.7</span>
+        <span class="n">tFact</span> <span class="o">=</span> <span class="n">tpC1</span><span class="o">*</span><span class="n">machineRating</span><span class="o">*</span><span class="n">machineRating</span> <span class="o">+</span> <span class="n">tpC2</span><span class="o">*</span><span class="n">machineRating</span> <span class="o">+</span> <span class="n">tpInt</span>   
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">iDepth</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">engPermits</span>  <span class="o">=</span> <span class="p">(</span><span class="n">lPrmtsCostCoeff1</span> <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">machineRating</span><span class="p">)</span> <span class="o">+</span> \
+                               <span class="p">(</span><span class="n">lPrmtsCostCoeff2</span> <span class="o">*</span> <span class="n">machineRating</span><span class="p">)</span>
+            <span class="n">ppi</span><span class="o">.</span><span class="n">ref_mon</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">engPermits</span> <span class="o">*=</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_LPM&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="n">ppi</span><span class="o">.</span><span class="n">ref_mon</span> <span class="o">=</span> <span class="mi">9</span>
+            
+            <span class="n">elC1</span>  <span class="o">=</span> <span class="mf">3.49E-06</span>
+            <span class="n">elC2</span>  <span class="o">=</span> <span class="o">-</span><span class="mf">0.0221</span>
+            <span class="n">elInt</span> <span class="o">=</span> <span class="mf">109.7</span>
+            <span class="n">eFact</span> <span class="o">=</span> <span class="n">elC1</span><span class="o">*</span><span class="n">machineRating</span><span class="o">*</span><span class="n">machineRating</span> <span class="o">+</span> <span class="n">elC2</span><span class="o">*</span><span class="n">machineRating</span> <span class="o">+</span> <span class="n">elInt</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">electrical</span> <span class="o">=</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">eFact</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_LEL&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            
+            <span class="n">rcC1</span>  <span class="o">=</span> <span class="mf">2.17E-06</span>
+            <span class="n">rcC2</span>  <span class="o">=</span> <span class="o">-</span><span class="mf">0.0145</span>
+            <span class="n">rcInt</span> <span class="o">=</span><span class="mf">69.54</span>
+            <span class="n">rFact</span> <span class="o">=</span> <span class="n">rcC1</span><span class="o">*</span><span class="n">machineRating</span><span class="o">*</span><span class="n">machineRating</span> <span class="o">+</span> <span class="n">rcC2</span><span class="o">*</span><span class="n">machineRating</span> <span class="o">+</span> <span class="n">rcInt</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roadsCivil</span> <span class="o">=</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">rFact</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_RDC&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+             
+            <span class="n">iCoeff</span> <span class="o">=</span> <span class="mf">1.965</span>
+            <span class="n">iExp</span>   <span class="o">=</span> <span class="mf">1.1736</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">installation</span> <span class="o">=</span> <span class="n">iCoeff</span> <span class="o">*</span> <span class="p">((</span><span class="n">hubHt</span><span class="o">*</span><span class="n">rtrDiam</span><span class="p">)</span><span class="o">**</span><span class="n">iExp</span><span class="p">)</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_LAI&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+          
+            <span class="bp">self</span><span class="o">.</span><span class="n">transportation</span> <span class="o">=</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">tFact</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_TPT&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+             
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">iDepth</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>  <span class="c"># offshore shallow</span>
+            <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span> <span class="o">=</span> <span class="mi">2003</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pai</span>            <span class="o">=</span> <span class="n">paiCost</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_PAE&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">portStaging</span>    <span class="o">=</span> <span class="n">ptstgCostFactor</span>  <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_STP&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span> <span class="c"># 1.415538133</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">engPermits</span>     <span class="o">=</span> <span class="n">oPrmtsCostFactor</span> <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_OPM&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scour</span>          <span class="o">=</span> <span class="n">scourCostFactor</span>  <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_STP&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span> <span class="c"># 1.415538133#</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">installation</span>   <span class="o">=</span> <span class="n">osInstallFactor</span>  <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_OAI&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>           
+            <span class="bp">self</span><span class="o">.</span><span class="n">electrical</span>     <span class="o">=</span> <span class="n">ossElCostFactor</span>  <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_OEL&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span>  <span class="o">=</span> <span class="mi">2002</span>                   
+            <span class="bp">self</span><span class="o">.</span><span class="n">transportation</span> <span class="o">=</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">tFact</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_TPT&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span> <span class="o">=</span> <span class="mi">2003</span>
+
+            <span class="k">pass</span> 
+        <span class="k">elif</span> <span class="p">(</span><span class="n">iDepth</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>  <span class="c"># offshore transitional depth</span>
+            <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span> <span class="o">=</span> <span class="mi">2003</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">turbInstall</span>   <span class="o">=</span> <span class="n">osInstallFactor</span>  <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_OAI&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">supportInstall</span> <span class="o">=</span> <span class="n">suppInstallFactor</span> <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_OAI&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">installation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">turbInstall</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">supportInstall</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pai</span>            <span class="o">=</span> <span class="n">paiCost</span>                          <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_PAE&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">electrical</span>     <span class="o">=</span> <span class="n">ostElCostFactor</span>  <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_OEL&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">portStaging</span>    <span class="o">=</span> <span class="n">ptstgCostFactor</span>  <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_STP&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">engPermits</span>     <span class="o">=</span> <span class="n">oPrmtsCostFactor</span> <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_OPM&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scour</span>          <span class="o">=</span> <span class="n">scourCostFactor</span>  <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_STP&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span>  <span class="o">=</span> <span class="mi">2002</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">turbTrans</span>           <span class="o">=</span> <span class="n">ostTTransFactor</span>  <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_TPT&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span> <span class="o">=</span> <span class="mi">2003</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">supportTrans</span>        <span class="o">=</span> <span class="n">ostSTransFactor</span>  <span class="o">*</span> <span class="n">machineRating</span> <span class="o">*</span> <span class="n">ppi</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s">&#39;IPPI_OAI&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">turbine_number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transportation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">turbTrans</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">supportTrans</span>
+            
+        <span class="k">elif</span> <span class="p">(</span><span class="n">iDepth</span> <span class="o">==</span> <span class="mi">4</span><span class="p">):</span>  <span class="c"># offshore deep</span>
+            <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">csmBOS: Add costCat 4 code</span><span class="se">\n\n</span><span class="s">&quot;</span>
+            <span class="k">pass</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">foundation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fdn</span><span class="o">.</span><span class="n">getCost</span><span class="p">()</span> <span class="o">*</span> <span class="n">turbine_number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">foundation</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">transportation</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">roadsCivil</span>     <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">portStaging</span>    <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">installation</span>   <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">electrical</span>     <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">engPermits</span>     <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pai</span>            <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">scour</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">iDepth</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">suretyBond</span> <span class="o">=</span> <span class="n">suretyBRate</span> <span class="o">*</span> <span class="p">(</span><span class="n">tcc</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost</span><span class="o">/</span> <span class="n">turbine_number</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">suretyBond</span> <span class="o">*</span> <span class="n">turbine_number</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">suretyBond</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
+        
+        <span class="n">ppi</span><span class="o">.</span><span class="n">ref_yr</span> <span class="o">=</span> <span class="mi">2002</span>
+
+    <span class="k">def</span> <span class="nf">getCost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the overall balance of station costs for the plant.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cost : float</span>
+<span class="sd">            Balance of plant costs [USD]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost</span>
+
+    <span class="k">def</span> <span class="nf">getDetailedCosts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Provides the detailed balance of station costs for the plant.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        detailedCosts : array_like of float</span>
+<span class="sd">            Balance of plant costs [USD] broken down into components: foundation, transporation, roads &amp; civil,</span>
+<span class="sd">            ports and staging, installation and assembly, electrical, permits, miscenalleous, scour, surety bond</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detailedCosts</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">foundation</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transportation</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">roadsCivil</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">portStaging</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">installation</span><span class="p">,</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">electrical</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">engPermits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pai</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scour</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">suretyBond</span><span class="p">]</span> 
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detailedCosts</span> 
+ 
+    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span>
+        <span class="k">print</span> <span class="s">&quot;BOS: &quot;</span>
+        <span class="k">print</span> <span class="s">&quot;  foundation     </span><span class="si">%8.3f</span><span class="s"> $&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">foundation</span>
+        <span class="k">print</span> <span class="s">&quot;  transportation </span><span class="si">%8.3f</span><span class="s"> $&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">transportation</span> 
+        <span class="k">print</span> <span class="s">&quot;  roadsCivil     </span><span class="si">%8.3f</span><span class="s"> $&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">roadsCivil</span>     
+        <span class="k">print</span> <span class="s">&quot;  portStaging    </span><span class="si">%8.3f</span><span class="s"> $&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">portStaging</span>    
+        <span class="k">print</span> <span class="s">&quot;  installation   </span><span class="si">%8.3f</span><span class="s"> $&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">installation</span>   
+        <span class="k">print</span> <span class="s">&quot;  electrical     </span><span class="si">%8.3f</span><span class="s"> $&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">electrical</span>     
+        <span class="k">print</span> <span class="s">&quot;  engPermits     </span><span class="si">%8.3f</span><span class="s"> $&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">engPermits</span>     
+        <span class="k">print</span> <span class="s">&quot;  pai            </span><span class="si">%8.3f</span><span class="s"> $&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">pai</span>            
+        <span class="k">print</span> <span class="s">&quot;  scour          </span><span class="si">%8.3f</span><span class="s"> $&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">scour</span>
+        <span class="k">print</span> <span class="s">&quot;TOTAL            </span><span class="si">%8.3f</span><span class="s"> $&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost</span>       
+        <span class="k">print</span> <span class="s">&quot;  surety bond    </span><span class="si">%8.3f</span><span class="s"> $&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">suretyBond</span>       
+        <span class="k">print</span>
+    
+<span class="c">#------------------------------------------------------------------</span>
+</div>
+<span class="k">def</span> <span class="nf">example</span><span class="p">():</span>
+  
+    <span class="c"># simple test of module</span>
+    
+    <span class="n">bos</span> <span class="o">=</span> <span class="n">csmBOS</span><span class="p">()</span>
+    
+    <span class="n">seaDepth</span> <span class="o">=</span> <span class="mf">20.0</span>
+    <span class="n">machineRating</span> <span class="o">=</span> <span class="mf">5000.0</span>
+    <span class="n">hubHt</span> <span class="o">=</span> <span class="mf">90.0</span>
+    <span class="n">rtrDiam</span> <span class="o">=</span> <span class="mf">126.0</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="mi">2009</span>
+    <span class="n">month</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">tcc</span> <span class="o">=</span> <span class="mf">5950209.283</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="n">turbine_number</span> <span class="o">=</span> <span class="mi">100</span>
+    
+    <span class="n">bos</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">seaDepth</span><span class="p">,</span><span class="n">machineRating</span><span class="p">,</span><span class="n">hubHt</span><span class="p">,</span><span class="n">rtrDiam</span><span class="p">,</span><span class="n">tcc</span><span class="p">,</span> <span class="n">turbine_number</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">print</span> <span class="s">&#39;BOS cost offshore   </span><span class="si">%9.3f</span><span class="s"> &#39;</span>          <span class="o">%</span> <span class="n">bos</span><span class="o">.</span><span class="n">getCost</span><span class="p">()</span>    
+    
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">example</span><span class="p">()</span>
+
+<span class="c">#------------------------------------------------------------------</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../index.html">NREL_CSM 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, NREL.
+      Last updated on Sep 21, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

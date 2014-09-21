@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nrel_csm.csmDriveEfficiency &mdash; NREL_CSM 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nrel.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="NREL_CSM 0.1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../index.html">NREL_CSM 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nrel_csm.csmDriveEfficiency</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">csmDriveEfficiency.py</span>
+<span class="sd">    </span>
+<span class="sd">Created by George Scott 2012</span>
+<span class="sd">Modified  by Katherine Dykes 2012</span>
+<span class="sd">Copyright (c)  NREL. All rights reserved.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+    
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="c"># from zope.interface import implements, Attribute, Interface</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+
+<span class="k">class</span> <span class="nc">DrivetrainEfficiencyModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
+    
+    <span class="nd">@abc.abstractmethod</span>
+    <span class="k">def</span> <span class="nf">getMaxEfficiency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return maximum efficiency of the generator           </span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        eta : float</span>
+<span class="sd">          maximum efficiency of drivetrain (unitless)</span>
+<span class="sd">        </span>
+
+<span class="sd">        &quot;&quot;&quot;</span> 
+        
+    <span class="nd">@abc.abstractmethod</span>
+    <span class="k">def</span> <span class="nf">getDrivetrainEfficiency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputPower</span><span class="p">,</span> <span class="n">ratedHubPower</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns efficiency of drivetrain operating at a ratio of outputPower to ratedHubPower</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        outputPower : float</span>
+<span class="sd">          rotor output power to the drivetrain (W, kW - units should match rated hub power units)</span>
+<span class="sd">        ratedHubPower : float</span>
+<span class="sd">          rotor rated hub power to the drivetrain (W, kW - units should match output power units)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        eta : float</span>
+<span class="sd">          efficiency of drivetrain at a given operating point (unitless)</span>
+<span class="sd">       </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+  
+
+<div class="viewcode-block" id="csmDriveEfficiency"><a class="viewcode-back" href="../../documentation.html#nrel_csm.csmDriveEfficiency.csmDriveEfficiency">[docs]</a><span class="k">class</span> <span class="nc">csmDriveEfficiency</span><span class="p">(</span><span class="n">DrivetrainEfficiencyModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class represents a simple drivetrain efficiency model based on the NREL Cost and Scaling Model.</span>
+<span class="sd">    It uses a simple quadratic formula for drivetrain efficiency based on empirical data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drivetrainDesign</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Set efficiency calculation coefficients based on drivetrain configuration type.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        drivetrainDesign : int</span>
+<span class="sd">           type of drivetrain design: 1 = 3-stage gearbox, 2 = single-stage gearbox, 3 = multi-gen, 4 = direct-drive (no gearbox)</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c">#constant, linear and quadratic losses based on empirical CSM models</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constantloss</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0128942744499</span><span class="p">,</span> <span class="mf">0.0133073345628</span><span class="p">,</span> <span class="mf">0.0154737171062</span><span class="p">,</span> <span class="mf">0.0100718545194</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linearloss</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0850952825355</span><span class="p">,</span> <span class="mf">0.036470617951</span><span class="p">,</span> <span class="mf">0.0446307743432</span><span class="p">,</span> <span class="mf">0.0199954344267</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quadraticloss</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0000</span><span class="p">,</span> <span class="mf">0.0610666545019</span><span class="p">,</span> <span class="mf">0.0578976395058</span><span class="p">,</span> <span class="mf">0.0689903255878</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drivetrainDesign</span> <span class="o">=</span> <span class="n">drivetrainDesign</span>
+        
+    <span class="c"># ---------------------------</span>
+
+    <span class="k">def</span> <span class="nf">getDrivetrainEfficiency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputPower</span><span class="p">,</span> <span class="n">ratedHubPower</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uses quadratic formula to calculate drivetrain efficiency with coefficients based on drivetrain configuraiton.</span>
+<span class="sd">        </span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        See Interfaces</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># check for negative value </span>
+        <span class="n">pwrFraction</span> <span class="o">=</span> <span class="n">outputPower</span> <span class="o">/</span> <span class="n">ratedHubPower</span>
+        <span class="c"># set for maximum if above rated</span>
+        <span class="n">pwrFraction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">pwrFraction</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="c"># check for positive power fraction else set eta = 1.0</span>
+        <span class="k">if</span> <span class="n">pwrFraction</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drivetrainDesign</span>
+            <span class="n">eta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">pwrFraction</span><span class="p">)</span>
+
+            <span class="n">eta</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constantloss</span><span class="p">[</span><span class="n">dt</span><span class="p">]</span><span class="o">/</span><span class="n">pwrFraction</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">linearloss</span><span class="p">[</span><span class="n">dt</span><span class="p">]</span> \
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadraticloss</span><span class="p">[</span><span class="n">dt</span><span class="p">]</span><span class="o">*</span><span class="n">pwrFraction</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eta</span> <span class="o">=</span> <span class="mf">1.0</span>
+ 
+        <span class="k">return</span> <span class="n">eta</span>
+        
+    <span class="c"># ---------------------------</span>
+
+    <span class="k">def</span> <span class="nf">getMaxEfficiency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uses quadratic formula to calculate maximum drivetrain efficiency with coefficients based on drivetrain configuration.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        See Interfaces</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">return</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constantloss</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">drivetrainDesign</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">linearloss</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">drivetrainDesign</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadraticloss</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">drivetrainDesign</span><span class="p">])</span>
+
+<span class="c">#------------------------------------------------------------------    </span>
+</div>
+<span class="k">def</span> <span class="nf">example</span><span class="p">():</span>
+    <span class="c"># simple test of module</span>
+    
+    <span class="n">dEfficiency</span> <span class="o">=</span> <span class="n">csmDriveEfficiency</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;Max Efficiency: </span><span class="si">%9.3f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">dEfficiency</span><span class="o">.</span><span class="n">getMaxEfficiency</span><span class="p">()</span>
+    
+    <span class="c"># test for 89.4% efficiency </span>
+    <span class="n">ratedHubPower</span> <span class="o">=</span> <span class="mf">5543.0</span>
+    <span class="n">outputPower</span> <span class="o">=</span> <span class="mf">3422.0</span>   
+    <span class="k">print</span> <span class="s">&#39;Output power: </span><span class="si">%9.3f</span><span class="s">  Rated power: </span><span class="si">%9.3f</span><span class="s">   Efficiency: </span><span class="si">%9.3f</span><span class="s">&#39;</span> \
+        <span class="o">%</span> <span class="p">(</span><span class="n">outputPower</span><span class="p">,</span><span class="n">ratedHubPower</span><span class="p">,</span><span class="n">dEfficiency</span><span class="o">.</span><span class="n">getDrivetrainEfficiency</span><span class="p">(</span><span class="n">outputPower</span><span class="p">,</span> <span class="n">ratedHubPower</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+  
+  <span class="n">example</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../index.html">NREL_CSM 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, NREL.
+      Last updated on Sep 21, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>
