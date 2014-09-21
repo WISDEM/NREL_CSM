@@ -5,7 +5,9 @@ NREL_CSM
 
     Simple curve fit model to estimate wind plant cost of energy based on a limited number of input parameters for the turbine and plant.
 
-    Author: `Katherine Dykes <mailto:katherine.dykes@nrel.gov>`_
+    Author: 
+`George Scott <mailto:george.scott@nrel.gov>`_ and
+`Katherine Dykes <mailto:katherine.dykes@nrel.gov>`_
 
     .. rubric:: Table of Contents
 
