@@ -108,7 +108,8 @@ class csmTurbine(object):
         # calaculate derivative input parameters for nacelle calculations       # todo - these should come from AEP/rotor module
         ratedHubPower  = machineRating / maxEfficiency 
         rotorSpeed     = (maxTipSpd/(0.5*rotorDiam)) * (60.0 / (2*pi))
-        maximumThrust  = airDensity * thrustCoeff * pi * rotorDiam**2 * (ratedWindSpd**2) / 8
+        maximumThrust  = airDensity * thrustCoeff * pi * rotorDiam**2. * (ratedWindSpd**2.) / 8.
+
         rotorTorque = ratedHubPower/(rotorSpeed*(pi/30))*1000   # NREL internal version
 
         # sub-component computations for mass, cost and dimensions          

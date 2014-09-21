@@ -272,7 +272,7 @@ def example():
     pcurve = np.array(pc.getPowerCurve())
     print 'Power Curve:'
     for i in xrange(0,pcurve.shape[1]):
-    	print (pcurve[0][i], pcurve[1][i])
+      print (pcurve[0][i], pcurve[1][i])
 
     '''# plot
     wind = pcurve[0]

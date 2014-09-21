@@ -1,3 +1,0 @@
-include *.txt
-include src/NREL_CSM/static/*
-recursive-include docs *.txt

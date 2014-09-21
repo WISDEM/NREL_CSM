@@ -110,6 +110,7 @@ class csmBlades(object):
         
         bladeCostCurrent = ( (slopeR3*(diam/2.0000)**3.0000 + (intR3))*ppi_mat + \
                                   (laborCoeff*(diam/2.0000)**laborExp)*ppi_labor    ) / (1.0000-0.2800)
+
         self.cost = bladeCostCurrent
 
     def getMass(self):

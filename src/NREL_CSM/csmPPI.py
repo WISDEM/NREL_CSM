@@ -6,9 +6,9 @@ Modified by Katherine Dykes 2012.
 Copyright (c) NREL. All rights reserved.
 """
 
+import os
 import sys
 import re
-import os
  
 class Escalator:
     ''' 
@@ -41,10 +41,11 @@ class Escalator:
             #    continue
             if (key not in ppitbls):
                 print 'No PPI table %s' % key
-                continue  
-            if key == '326150P':
-              sy = 2002        
-            ce = ppitbls[key].getEsc(sy,sm,ey,em)
+                continue           
+            if (key == "326150P") and (self.name == "Advanced Blade material costs       "):
+            		ce = ppitbls[key].getEsc(2002,sm,ey,em)
+            else:
+            		ce = ppitbls[key].getEsc(sy,sm,ey,em)
             sum += ce * self.wts[i]
         return sum
 
@@ -87,8 +88,6 @@ class PPITbl:
             #print "LSR %d LER %d" % (len(self.cost[start_row]),len(self.cost[end_row]))
             cost_start = self.cost[start_row][start_mon-1]
             cost_end   = self.cost[end_row][end_mon-1]
-            #print '{0:3f}'.format(cost_start)
-            #print '{0:3f}'.format(cost_end)
         except:
             print "Index out of range for table %s %s" % (self.code, self.name)
             return None
@@ -119,7 +118,7 @@ class PPI:
         
         #self.escData = [None] * 37
         self.escData = {}  # try a dictionary
-        self.tblfile = 'static\PPI_Tables.txt'
+        self.tblfile = 'static\PPI_Tables.txt'   #TODO: temporary solution - should update so it can locate it from dictionary etc
         self.ppitbls = {} # dictionary of PPITbl objects 
         self.yrs_gdp = []
         self.ppi_gdp = []
@@ -131,7 +130,7 @@ class PPI:
         self.debug = debug
 
         thisdir = os.path.dirname(os.path.realpath(__file__))   
-        fullfile = thisdir + '\\' + self.tblfile
+        fullfile = thisdir + '\\' + self.tblfile       
         try:
             infile = open(fullfile, 'r') #infile = open(self.tblfile)
         except:
@@ -276,7 +275,7 @@ def example():
     # test cases
     
     sy = 2002; sm = 9;
-    ey = 2009; em = 12;
+    ey = 2010; em = 13;
     ppi = PPI(sy,sm,ey,em)
          
     for i in list(ppi.escData.keys()):

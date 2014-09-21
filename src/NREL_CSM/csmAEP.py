@@ -12,7 +12,6 @@ Copyright (c)  NREL. All rights reserved.
     
 from math import *
 import numpy as np
-from gamma import gamma   # our own version
 
 class csmAEP:
 
@@ -140,11 +139,11 @@ def example():
     powercurve = np.array(pcurve.powerCurve)
 
     # initialize input parameters
-    '''powercurve = np.array([[0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, \
+    powercurve = np.array([[0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, \
                            11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0], \
                           [0.0, 0.0, 0.0, 0.0, 187.0, 350.0, 658.30, 1087.4, 1658.3, 2391.5, 3307.0, \
                           4415.70, 5000.0, 5000.0, 5000.0, 5000.0, 5000.0, 5000.0, 5000.0, 5000.0, 5000.0, 5000.0, \
-                          5000.0, 5000.0, 5000.0, 5000.0, 0.0]])'''
+                          5000.0, 5000.0, 5000.0, 5000.0, 0.0]])
     ratedPower=5000.0
     hubHt    = 90.0
     shearExp = 0.1
@@ -158,7 +157,7 @@ def example():
     aep.compute(powercurve, ratedPower, hubHt, shearExp, ws50m, weibullK, \
                 soilingLosses, arrayLosses, availability)
 
-    print 'AEP:        %9.3f MWh (for Rated Power: %6.1f)'   % (aep.getAEP(), ratedPower)
+    print 'AEP per turbine: %9.3f MWh (for Rated Power: %6.1f)'   % (aep.getAEP(), ratedPower)
     print 'CapFactor:  %9.3f %% '          % (aep.getCapacityFactor()*100.0)
     print 'Power Curve:'
     print powercurve

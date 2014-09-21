@@ -67,7 +67,7 @@ class csmFoundation(object):
         elif (self.ftype == 2):
             sscf = 300.0 # $/kW
             self.cost = sscf*MachineRating
-            ppi.ref_yr = 2003                                     # reference year for offshore foundations is 2003 (as with offshore BOS variables)
+            ppi.ref_yr = 2003     
             fndnCostEscalator = ppi.compute('IPPI_MPF')
             ppi.ref_yr = 2002
         elif (self.ftype == 3):
@@ -83,7 +83,7 @@ class csmFoundation(object):
         self.cost *= fndnCostEscalator
         
         if (verbose > 0):
-        	print "foundation cost: {0}".format(self.cost)
+          print "foundation cost: {0}".format(self.cost)
         
     def getCost(self):
         """ 
@@ -114,7 +114,7 @@ def example():
     seaDepth = 20.0
 
     print "Offshore foundation cost"
-    foundation.compute(ratedPower, hubHeight, rotorDiameter, seaDepth, curr_yr, curr_mon, 1)	        
+    foundation.compute(ratedPower, hubHeight, rotorDiameter, seaDepth, curr_yr, curr_mon, 1)          
 
 if __name__ == "__main__":
 

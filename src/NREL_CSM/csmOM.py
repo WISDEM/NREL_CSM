@@ -137,9 +137,9 @@ def example():
 
     # simple test of module
     
-    aep = 18756299.8430
+    aep = 1701626526.28
     machineRating = 5000.0
-    year = 2009
+    year = 2010
     month = 12
     seaDepth = 20.0
     
@@ -148,7 +148,14 @@ def example():
     om.compute(aep, seaDepth, machineRating, year, month)
 
     print 'OM cost offshore   %9.3f LevRep %9.3f Lease %9.3f'  % \
-        (om.getOMCost(), om.getLRC(), om.getLLC())	
+        (om.getOMCost(), om.getLRC(), om.getLLC())
+    
+    seaDepth = 0.0
+
+    om.compute(aep, seaDepth, machineRating, year, month)
+
+    print 'OM cost offshore   %9.3f LevRep %9.3f Lease %9.3f'  % \
+        (om.getOMCost(), om.getLRC(), om.getLLC())
 
 if __name__ == "__main__":
 

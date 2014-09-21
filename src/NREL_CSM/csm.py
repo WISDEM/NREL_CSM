@@ -33,46 +33,37 @@ class csm(object):
         self.bos = csmBOS()
         self.om = csmOM()
         self.fin = csmFinance()
-        print "initialization done"
 
-    def compute(self, hubHeight, ratedPower, maxTipSpd, rotorDiam, dtDesign, nblades, \
-                       altitude, thrustCoeff, seaDepth, crane, advancedBlade, \
-                       advancedBedplate, advancedTower, year, month, maxCp, maxTipSpdRatio, cutInWS, cutOutWS, \
-                       airDensity,shearExp,ws50m,weibullK, \
-                       soilingLosses, arrayLosses, availability, \
-                       fcr, constructionrate, taxrate, discountrate, \
-                       constructiontime, projlifetime, turbineNum):
+    def compute(self, hubHeight, ratedPower, maxTipSpd, rotorDiam, dtDesign, nblades, altitude, thrustCoeff, seaDepth, crane, advancedBlade,  advancedBedplate, advancedTower, year, month, maxCp, maxTipSpdRatio, cutInWS, cutOutWS, \
+                      airDensity, shearExp, ws50m, weibullK, soilingLosses, arrayLosses, availability, fcr, taxrate, discountrate, constructiontime, projlifetime, turbineNum):
 
         self.powerCurve.compute(self.drivetrain, hubHeight, ratedPower,maxTipSpd,rotorDiam,  \
                    maxCp, maxTipSpdRatio, cutInWS, cutOutWS, \
                    altitude, airDensity)
-        print "powercurve done"
+
         self.powercurve = np.array(self.powerCurve.powerCurve)
   
         self.aep.compute(self.powercurve, ratedPower, hubHeight, shearExp,ws50m,weibullK, \
                   soilingLosses, arrayLosses, availability)
-        print "aep done"
-      
+  
         self.turb.compute(hubHeight, ratedPower, maxTipSpd, rotorDiam, dtDesign, nblades, \
                          self.drivetrain.getMaxEfficiency(), self.powerCurve.ratedWindSpeed, altitude, thrustCoeff, seaDepth, crane, advancedBlade, \
                          advancedBedplate, advancedTower, year, month)
-        print "turb done"
 
-        self.bos.compute(seaDepth,ratedPower,hubHeight,rotorDiam,self.turb.cost, year, month)
-        print "bos done"
+        self.bos.compute(seaDepth,ratedPower,hubHeight,rotorDiam,self.turb.cost, turbineNum, year, month)
+
         self.om.compute(self.aep.aep, seaDepth, ratedPower, year, month)
-        print "om done"
+
         self.fin.compute(ratedPower, self.turb.cost, self.om.cost, self.om.llc, self.om.lrc, \
-                 self.bos.cost, self.aep.aep, fcr, constructionrate, taxrate, discountrate, \
+                 self.bos.cost, self.aep.aep, fcr, taxrate, discountrate, \
                  constructiontime, projlifetime, turbineNum, seaDepth)
-        print "fin done"
 
 def example():
 
+    #Default Cost and Scaling Model inputs for 5 MW turbine (onshore)    
     ppi.curr_yr  = 2009
     ppi.curr_mon = 12
 
-    #Default Cost and Scaling Model inputs for 5 MW turbine (onshore)    
     hubHeight=90.0
     ratedPower=5000.0
     maxTipSpd=80.0
@@ -100,7 +91,6 @@ def example():
     arrayLosses = 0.10
     availability = 0.941
     fcr = 0.12
-    constructionrate = 0.0
     taxrate = 0.4
     discountrate = 0.07
     constructiontime = 1
@@ -108,71 +98,21 @@ def example():
     turbineNum = 100
     
     csmtest = csm(dtDesign)
-    csmtest.compute(hubHeight, ratedPower, maxTipSpd, rotorDiam, dtDesign, nblades, \
-                       altitude, thrustCoeff, seaDepth, crane, advancedBlade, \
-                       advancedBedplate, advancedTower, year, month, maxCp, maxTipSpdRatio, cutInWS, cutOutWS, \
-                       airDensity,shearExp,ws50m,weibullK, \
-                       soilingLosses, arrayLosses, availability, \
-                       fcr, constructionrate, taxrate, discountrate, \
-                       constructiontime, projlifetime, turbineNum)
+    csmtest.compute(hubHeight, ratedPower, maxTipSpd, rotorDiam, dtDesign, nblades, altitude, thrustCoeff, seaDepth, crane, advancedBlade,  advancedBedplate, advancedTower, year, month, maxCp, maxTipSpdRatio, cutInWS, cutOutWS, \
+                      airDensity, shearExp, ws50m, weibullK, soilingLosses, arrayLosses, availability, fcr, taxrate, discountrate, constructiontime, projlifetime, turbineNum)
            
-    print "%9.8f" % (csmtest.fin.LCOE)
-    print "%9.8f"%(csmtest.fin.COE)
-    print "%9.5f"%(csmtest.aep.aep / 1000.0)
-    print "%9.5f"%(csmtest.bos.cost / 1000.0)
-    print "%9.5f"%(csmtest.turb.cost / 1000.0)
-    print "%9.5f"%(csmtest.om.cost / 1000.0)
+    print "LCOE %9.8f" % (csmtest.fin.LCOE)
+    print "COE %9.8f"%(csmtest.fin.COE)
+    print "AEP %9.5f"%(csmtest.aep.aep / 1000.0)
+    print "BOS %9.5f"%(csmtest.bos.cost / 1000.0)
+    print "TCC %9.5f"%(csmtest.turb.cost / 1000.0)
+    print "OM %9.5f"%(csmtest.om.cost / 1000.0)
+    print "LRC %9.5f"%(csmtest.om.lrc / 1000.0)
+    print "LLC %9.5f"%(csmtest.om.llc / 1000.0)
     print
     csmtest.turb.cm_print()
     csmtest.turb.nac.dump()
-#
-#    end = 2007
-#    step = 1
-#    while (year <= end):
-#        csmtest.compute(hubHeight, ratedPower, maxTipSpd, rotorDiam, dtDesign, nblades, \
-#                           maxEfficiency, ratedWindSpd, altitude, thrustCoeff, seaDepth, crane, advancedBlade, \
-#                           advancedBedplate, year, month, maxCp, maxTipSpdRatio, cutInWS, cutOutWS, \
-#                           airDensity,shearExp,ws50m,weibullK, \
-#                           soilingLosses, arrayLosses, availability, \
-#                           fcr, constructionrate, taxrate, discountrate, \
-#                           constructiontime, projlifetime, turbineNum)
-#                           
-#
-#        print year            
-#        print "%9.5f" % (csmtest.fin.LCOE)
-#        print "%9.5f"%(csmtest.fin.COE)
-#        print "%9.5f"%(csmtest.aep.aep / 1000.0)
-#        print "%9.5f"%(csmtest.bos.cost / 1000.0)
-#        print "%9.5f"%(csmtest.turb.cost / 1000.0)
-#        print "%9.5f"%(csmtest.om.cost / 1000.0)
-#        print
-#        year += step  
-
-
-    # print "%9.5f"%(csmtest.aep.getCapacityFactor())
-    # print
-    
-   # print "Rotor Cost: {0}".format(csmtest.turb.rotorCost)
-   # print "Rotor Mass: {0}".format(csmtest.turb.rotorMass)
-   # print "Blade Cost *3: {0}".format(csmtest.turb.blades.getCost()*3.0)
-   # print "Blade Mass *3: {0}".format(csmtest.turb.blades.getMass()*3.0)
-   # print "Hub Cost: {0}".format(csmtest.turb.hub.getCost())
-   # print "Hub Mass: {0}".format(csmtest.turb.hub.getMass())
-   # print
-
-    # print '%9.2f \n %9.2f' % (csmtest.turb.rotorCost / 1000.0, csmtest.turb.rotorMass)
-    # print '%9.2f \n %9.2f' % (csmtest.turb.nac.cost / 1000.0, csmtest.turb.nac.mass)
-    # print '%9.2f' % (csmtest.turb.tower.cost / 1000.0)
-    # print '%9.2f' % (csmtest.turb.tower.mass)
-    # print '%9.2f' % (csmtest.turb.mass)
-
-    # print "LCOE: {0}".format(csmtest.fin.LCOE)
-    # print "COE: {0}".format(csmtest.fin.COE)
-    # print "AEP: {0}".format(csmtest.aep.aep)
-    # print "TCC: {0}".format(csmtest.turb.cost)
-    # print "Turbine mass: {0}".format(csmtest.turb.mass)
-    # print "BOS: {0}".format(csmtest.bos.cost)
-    # print "OnM: {0} {1} {2}".format(csmtest.om.cost, csmtest.om.lrc, csmtest.om.llc)
+    csmtest.bos.dump()
 
 if __name__ == "__main__":
 

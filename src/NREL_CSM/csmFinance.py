@@ -19,7 +19,7 @@ class csmFinance(object):
            Initialize properties for csmFinance
         """
         
-    def compute(self, ratedpwr, tcc, om, llc, lrc, bos, aep, fcr, constructionrate, taxrate, discountrate, constructiontime, projlifetime, turbineNum, seaDepth):
+    def compute(self, ratedpwr, tcc, om, llc, lrc, bos, aep, fcr, taxrate, discountrate, constructiontime, projlifetime, turbineNum, seaDepth):
         """
         Computes a wind plant cost of energy and levelized cost of energy using the NREL Cost and Scaling Model method.
         
@@ -41,8 +41,6 @@ class csmFinance(object):
            Annual energy production (for entire plant) [kWh]
         fcr : float
            Fixed charge rate
-        constructionrate : float
-           Construction financing rate
         taxrate : float
            Project tax rate
         discountrate : float
@@ -58,17 +56,19 @@ class csmFinance(object):
 
         if seaDepth > 0.0:
            warrantyPremium = (tcc / 1.10) * 0.15
-           icc = tcc + warrantyPremium + bos
+           icc = tcc * turbineNum + warrantyPremium * turbineNum + bos
         else:
-           icc = tcc + bos
+           icc = tcc * turbineNum + bos
 
         #compute COE and LCOE values
-        self.COE = ((icc)* fcr / aep) + (om * (1-taxrate) + llc + lrc) / aep                        
+        
+        self.COE = ((icc/turbineNum * fcr) + (om*  (1-taxrate)  + llc + lrc)) / aep
+                      
         iccKW = (icc) / (ratedpwr * turbineNum)
         amortFactor = (1 + 0.5*((1+discountrate)**constructiontime-1)) * \
                       ((discountrate)/(1-(1+discountrate)**(-1.0*projlifetime)))
-        capFact = aep / (8760 * ratedpwr * turbineNum)
-        self.LCOE = (iccKW*amortFactor) / (8760*capFact) + (om/aep)
+        capFact = aep / (8760 * ratedpwr)
+        self.LCOE = (iccKW*amortFactor) / (8760*capFact) + (om)/aep
 
     def getCOE(self):
         """
@@ -109,7 +109,6 @@ def example():
     bos = 7668775.3
     aep = 15756299.843
     fcr = 0.12
-    constructionrate = 0.0
     taxrate = 0.4
     discountrate = 0.07
     constructiontime = 1
@@ -119,7 +118,7 @@ def example():
 
     print "Offshore"
     lcoe.compute(ratedpwr, tcc, om, llc, lrc, bos, aep, \
-         fcr, constructionrate, taxrate, discountrate, constructiontime, projlifetime, turbineNum, seaDepth)
+         fcr, taxrate, discountrate, constructiontime, projlifetime, turbineNum, seaDepth)
     print "LCOE %6.6f" % (lcoe.getLCOE())
     print "COE %6.6f" % (lcoe.getCOE())
     print

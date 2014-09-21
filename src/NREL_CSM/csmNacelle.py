@@ -495,6 +495,7 @@ class csmNacelle(object):
 
         MassFromTorque = BedplateWeightFac * 0.00368 * RotorTorque
         MassFromThrust      = 0.00158 * BedplateWeightFac * MaximumThrust * TowerTopDiam
+
         MassFromRotorWeight = 0.015   * BedplateWeightFac * RotorMass     * TowerTopDiam
         
         # Bedplate(Length|Area) added by GNS
@@ -514,6 +515,7 @@ class csmNacelle(object):
 
         # --- nacelle totals        
         TotalMass = MassFromTorque + MassFromThrust + MassFromRotorWeight + MassFromArea
+
         mfmCoeff[1] = TotalMass
         mfmCoeff[4] = TotalMass
         

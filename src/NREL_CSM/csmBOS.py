@@ -29,7 +29,7 @@ class csmBOS:
         self.pai            = 0.0
         self.scour          = 0.0
         
-    def compute(self,seaDepth,machineRating,hubHt,rtrDiam,tcc, year, month,verbose=0.0):
+    def compute(self,seaDepth,machineRating,hubHt,rtrDiam,tcc, turbine_number, year, month,verbose=0.0):
         """
         Computes the balance of station costs for a wind plant using the NREL Cost and Scaling Model method.
         
@@ -103,60 +103,63 @@ class csmBOS:
             self.engPermits  = (lPrmtsCostCoeff1 * machineRating * machineRating) + \
                                (lPrmtsCostCoeff2 * machineRating)
             ppi.ref_mon = 3
-            self.engPermits *= ppi.compute('IPPI_LPM') 
+            self.engPermits *= ppi.compute('IPPI_LPM') * turbine_number
             ppi.ref_mon = 9
             
             elC1  = 3.49E-06
             elC2  = -0.0221
             elInt = 109.7
             eFact = elC1*machineRating*machineRating + elC2*machineRating + elInt
-            self.electrical = machineRating * eFact * ppi.compute('IPPI_LEL')
+            self.electrical = machineRating * eFact * ppi.compute('IPPI_LEL') * turbine_number
             
             rcC1  = 2.17E-06
             rcC2  = -0.0145
             rcInt =69.54
             rFact = rcC1*machineRating*machineRating + rcC2*machineRating + rcInt
-            self.roadsCivil = machineRating * rFact * ppi.compute('IPPI_RDC')
+            self.roadsCivil = machineRating * rFact * ppi.compute('IPPI_RDC') * turbine_number
              
             iCoeff = 1.965
             iExp   = 1.1736
-            self.installation = iCoeff * ((hubHt*rtrDiam)**iExp) * ppi.compute('IPPI_LAI')
+            self.installation = iCoeff * ((hubHt*rtrDiam)**iExp) * ppi.compute('IPPI_LAI') * turbine_number
           
-            self.transportation = machineRating * tFact * ppi.compute('IPPI_TPT')
+            self.transportation = machineRating * tFact * ppi.compute('IPPI_TPT') * turbine_number
              
             pass
         elif (iDepth == 2):  # offshore shallow
-            self.pai            = paiCost * ppi.compute('IPPI_PAE')
-            self.portStaging    = ptstgCostFactor  * machineRating * ppi.compute('IPPI_STP') # 1.415538133
-            self.engPermits     = oPrmtsCostFactor * machineRating * ppi.compute('IPPI_OPM')
-            self.scour          = scourCostFactor  * machineRating * ppi.compute('IPPI_STP') # 1.415538133#
-            self.installation   = osInstallFactor  * machineRating * ppi.compute('IPPI_OAI')            
-            self.electrical     = ossElCostFactor  * machineRating * ppi.compute('IPPI_OEL')
+            ppi.ref_yr = 2003
+            self.pai            = paiCost * ppi.compute('IPPI_PAE') * turbine_number
+            self.portStaging    = ptstgCostFactor  * machineRating * ppi.compute('IPPI_STP') * turbine_number # 1.415538133
+            self.engPermits     = oPrmtsCostFactor * machineRating * ppi.compute('IPPI_OPM') * turbine_number
+            self.scour          = scourCostFactor  * machineRating * ppi.compute('IPPI_STP') * turbine_number # 1.415538133#
+            self.installation   = osInstallFactor  * machineRating * ppi.compute('IPPI_OAI') * turbine_number           
+            self.electrical     = ossElCostFactor  * machineRating * ppi.compute('IPPI_OEL') * turbine_number
             ppi.ref_yr  = 2002                   
-            self.transportation = machineRating * tFact * ppi.compute('IPPI_TPT')
+            self.transportation = machineRating * tFact * ppi.compute('IPPI_TPT') * turbine_number
             ppi.ref_yr = 2003
 
             pass 
         elif (iDepth == 3):  # offshore transitional depth
-            self.turbInstall   = osInstallFactor  * machineRating * ppi.compute('IPPI_OAI')
-            self.supportInstall = suppInstallFactor * machineRating * ppi.compute('IPPI_OAI')
-            self.installation = self.turbInstall + self.supportInstall
-            self.pai            = paiCost                          * ppi.compute('IPPI_PAE')
-            self.electrical     = ostElCostFactor  * machineRating * ppi.compute('IPPI_OEL')
-            self.portStaging    = ptstgCostFactor  * machineRating * ppi.compute('IPPI_STP')
-            self.engPermits     = oPrmtsCostFactor * machineRating * ppi.compute('IPPI_OPM')
-            self.scour          = scourCostFactor  * machineRating * ppi.compute('IPPI_STP')
-            ppi.ref_yr  = 2002
-            self.turbTrans           = ostTTransFactor  * machineRating * ppi.compute('IPPI_TPT') 
             ppi.ref_yr = 2003
-            self.supportTrans        = ostSTransFactor  * machineRating * ppi.compute('IPPI_OAI') 
+            self.turbInstall   = osInstallFactor  * machineRating * ppi.compute('IPPI_OAI') * turbine_number
+            self.supportInstall = suppInstallFactor * machineRating * ppi.compute('IPPI_OAI') * turbine_number
+            self.installation = self.turbInstall + self.supportInstall
+            self.pai            = paiCost                          * ppi.compute('IPPI_PAE') * turbine_number
+            self.electrical     = ostElCostFactor  * machineRating * ppi.compute('IPPI_OEL') * turbine_number
+            self.portStaging    = ptstgCostFactor  * machineRating * ppi.compute('IPPI_STP') * turbine_number
+            self.engPermits     = oPrmtsCostFactor * machineRating * ppi.compute('IPPI_OPM') * turbine_number
+            self.scour          = scourCostFactor  * machineRating * ppi.compute('IPPI_STP') * turbine_number
+            ppi.ref_yr  = 2002
+            self.turbTrans           = ostTTransFactor  * machineRating * ppi.compute('IPPI_TPT') * turbine_number
+            ppi.ref_yr = 2003
+            self.supportTrans        = ostSTransFactor  * machineRating * ppi.compute('IPPI_OAI') * turbine_number
             self.transportation = self.turbTrans + self.supportTrans
             
         elif (iDepth == 4):  # offshore deep
             print "\ncsmBOS: Add costCat 4 code\n\n"
             pass
-       
-        self.cost = self.fdn.getCost() + \
+        
+        self.foundation = self.fdn.getCost() * turbine_number
+        self.cost = self.foundation + \
                     self.transportation + \
                     self.roadsCivil     + \
                     self.portStaging    + \
@@ -167,13 +170,15 @@ class csmBOS:
                     self.scour
 
         if (iDepth > 1):
-            self.suretyBond = suretyBRate * (tcc + self.cost)
-            self.cost = self.cost + self.suretyBond
+            self.suretyBond = suretyBRate * (tcc + self.cost/ turbine_number)
+            self.cost += self.suretyBond * turbine_number
         else:
-        	  self.suretyBond = 0.0
+            self.suretyBond = 0.0
 
         if (verbose > 0):
             self.dump()
+        
+        ppi.ref_yr = 2002
 
     def getCost(self):
         """ 
@@ -197,7 +202,7 @@ class csmBOS:
             Balance of plant costs [USD] broken down into components: foundation, transporation, roads & civil,
             ports and staging, installation and assembly, electrical, permits, miscenalleous, scour, surety bond
         """
-        self.detailedCosts = [self.fdn.getCost(), self.transportation, self.roadsCivil, self.portStaging, self.installation, \
+        self.detailedCosts = [self.foundation, self.transportation, self.roadsCivil, self.portStaging, self.installation, \
                 self.electrical, self.engPermits, self.pai, self.scour, self.suretyBond] 
         
         return self.detailedCosts 
@@ -205,7 +210,7 @@ class csmBOS:
     def dump(self):
         print
         print "BOS: "
-        print "  foundation     %8.3f $" % self.fdn.getCost()
+        print "  foundation     %8.3f $" % self.foundation
         print "  transportation %8.3f $" % self.transportation 
         print "  roadsCivil     %8.3f $" % self.roadsCivil     
         print "  portStaging    %8.3f $" % self.portStaging    
@@ -213,7 +218,7 @@ class csmBOS:
         print "  electrical     %8.3f $" % self.electrical     
         print "  engPermits     %8.3f $" % self.engPermits     
         print "  pai            %8.3f $" % self.pai            
-        print "  scour          %8.3f $" % self.scour       
+        print "  scour          %8.3f $" % self.scour
         print "TOTAL            %8.3f $" % self.cost       
         print "  surety bond    %8.3f $" % self.suretyBond       
         print
@@ -232,9 +237,10 @@ def example():
     rtrDiam = 126.0
     year = 2009
     month = 12
-    tcc = 5950209.283
+    tcc = 5950209.283 * 100
+    turbine_number = 100
     
-    bos.compute(seaDepth,machineRating,hubHt,rtrDiam,tcc, year, month, 1)
+    bos.compute(seaDepth,machineRating,hubHt,rtrDiam,tcc, turbine_number, year, month, 1)
     
     print 'BOS cost offshore   %9.3f '          % bos.getCost()    
     
