@@ -2,7 +2,9 @@ NREL_CSM is a set of models for assessing overall wind plant cost of energy (coe
 
 This code is based on the NREL Wind Turbine Cost and Scaling Model which was published in a report in 2006.  The contents of the model have been incorporated into the WISDEM OpenMDAO software but the raw python version of the model is provided here.  This raw python version of the model (NREL_CSM) will not be maintained going forward and users are encouraged to use the version in [WISDEM](http://github.com/WISDEM) for cost analysis work.
 
-Author: [K. Dykes](mailto:katherine.dykes@nrel.gov)
+Author:
+[K. Dykes](mailto:katherine.dykes@nrel.gov) and
+[G. Scott](mailto:george.scott@nrel.gov)
 
 ## Detailed Documentation
 
