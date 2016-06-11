@@ -118,7 +118,7 @@ class PPI:
         
         #self.escData = [None] * 37
         self.escData = {}  # try a dictionary
-        self.tblfile = 'static\PPI_Tables.txt'   #TODO: temporary solution - should update so it can locate it from dictionary etc
+        self.tblfile = 'static'+os.sep+'PPI_Tables.txt'   #TODO: temporary solution - should update so it can locate it from dictionary etc
         self.ppitbls = {} # dictionary of PPITbl objects 
         self.yrs_gdp = []
         self.ppi_gdp = []
@@ -130,7 +130,7 @@ class PPI:
         self.debug = debug
 
         thisdir = os.path.dirname(os.path.realpath(__file__))   
-        fullfile = thisdir + '\\' + self.tblfile       
+        fullfile = thisdir + os.sep + self.tblfile       
         try:
             infile = open(fullfile, 'r') #infile = open(self.tblfile)
         except:
