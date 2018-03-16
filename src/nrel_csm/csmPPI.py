@@ -5,7 +5,7 @@ Created by George Scott on 2012-08-01.
 Modified by Katherine Dykes 2012.
 Copyright (c) NREL. All rights reserved.
 """
-
+#import commonse
 import os
 import sys
 import re
@@ -26,7 +26,7 @@ class Escalator:
             self.wts[i] *= 0.01
             sum += self.wts[i]
         if (abs(sum-1.0) > 0.0001):
-            print "Weights for %s add up to %.5f" % sum
+            print('Weights add up to {0:.5f}'.format(sum))
             
     def compute(self,ppitbls,sy,sm,ey,em):
         ''' 
@@ -36,11 +36,11 @@ class Escalator:
         sum = 0.0
         for i in range(len(self.tbls)):
             key = self.tbls[i].strip()
-            #if (key == 'GDP'):
-            #    print 'Skipping GDP'
-            #    continue
+            '''if (key == 'GDP'):
+                print('Skipping GDP')
+                continue'''
             if (key not in ppitbls):
-                print 'No PPI table %s' % key
+                print ('No PPI table %s'.format(key))
                 continue           
             if (key == "326150P") and (self.name == "Advanced Blade material costs       "):
             		ce = ppitbls[key].getEsc(2002,sm,ey,em)
@@ -72,29 +72,26 @@ class PPITbl:
         end_row   = end_yr-self.years[0]
         
         if (start_row < 0):
-            print "\n*** Year start_yr ${0:.2f} before table start {1}\n".format(start_yr,self.years[0])
+            print('\n*** Year start_yr ${0:.2f} before table start {1}\n'.format(start_yr,self.years[0]))
             return None
         if (end_row >= len(self.cost)):
-            print "\n*** Year end_yr ${0:.2f} after table end {1}\n".format(end_yr,self.years[-1])
+            print('\n*** Year end_yr ${0:.2f} after table end {1}\n'.format(end_yr,self.years[-1]))
             return None            
         if (len(self.cost[start_row]) < start_mon):
             raise IndexError("Start_mon out of range")
-        if (len(self.cost[end_row]) < end_mon):
-            print "\n*** EM %d > LER %d in table %s" % (end_mon, len(self.cost[end_row]), self.code)
+        if (len(self.cost[int(end_row)]) < int(end_mon)):
+            print('\n*** EM {0:2d} > LER {0:2d} in table {}'.format(end_mon, len(self.cost[end_row]), self.code))
             raise IndexError("End_mon out of range")
             
         try:
-            #print "SR %d ER %d" % (start_row,end_row)
-            #print "LSR %d LER %d" % (len(self.cost[start_row]),len(self.cost[end_row]))
+            '''print('SR {0:2d} ER {0:2d}'.format(start_row,end_row))
+            print('LSR {0:2d} LER {0:2d}'.format(len(self.cost[start_row]),len(self.cost[end_row])))'''
             cost_start = self.cost[start_row][start_mon-1]
-            cost_end   = self.cost[end_row][end_mon-1]
+            cost_end   = self.cost[int(end_row)][int(end_mon)-1]
         except:
-            print "Index out of range for table %s %s" % (self.code, self.name)
+            print('Index out of range for table {} {}'.format(self.code, self.name))
             return None
         esc = cost_end / cost_start
-        if (printFlag):
-            print "%-9s C[%2d][%2d] = %6.2f  C[%2d][%2d] = %6.2f  Esc = %6.4f" % \
-                (self.code, start_yr,start_mon,cost_start,end_yr,end_mon,cost_end,esc)
         return esc
 
 #--------------------------------------------------------------------------------------
@@ -118,7 +115,7 @@ class PPI:
         
         #self.escData = [None] * 37
         self.escData = {}  # try a dictionary
-        self.tblfile = 'static'+os.sep+'PPI_Tables.txt'   #TODO: temporary solution - should update so it can locate it from dictionary etc
+        self.tblfile = os.path.join('static','PPI_Tables.txt')   #TODO: temporary solution - should update so it can locate it from dictionary etc
         self.ppitbls = {} # dictionary of PPITbl objects 
         self.yrs_gdp = []
         self.ppi_gdp = []
@@ -129,13 +126,12 @@ class PPI:
         self.curr_mon = curr_mon
         self.debug = debug
 
-        thisdir = os.path.dirname(os.path.realpath(__file__))   
-        fullfile = thisdir + os.sep + self.tblfile       
+        fullfile = self.tblfile #os.path.join(commonse.__path__[0], self.tblfile)
         try:
             infile = open(fullfile, 'r') #infile = open(self.tblfile)
         except:
-            sys.stdout.write ("Error opening or reading %s\n" % self.tblfile)
-            pass
+            sys.stdout.write ("Error opening or reading %s\n" % fullfile)
+            quit()
         else:
             if (self.debug > 0):
                 sys.stdout.write ("Opened %s\n" % self.tblfile)
@@ -179,7 +175,7 @@ class PPI:
                 ippi = len(self.ppitbls)-1
                 iCode[code] = ippi  # index of tables by code
                 if (self.debug > 0): 
-                    print "Created %2d %-10s %s" % (ippi, code, self.ppitbls[code].name)
+                    print('Created {0:2d} {} {}'.format(ippi, code, self.ppitbls[code].name))
                 continue
                 
             if (words[0].startswith("NAICS")):
@@ -192,7 +188,7 @@ class PPI:
                 self.ppitbls[code] = PPITbl(code=code, name=words[2])  # add a new element to self.ppitbls
                 ippi = len(self.ppitbls)-1
                 if (self.debug > 0): 
-                    print "Created %2d %-10s %s" % (ippi, code, self.ppitbls[code].name)
+                    print('Created {0:2d} {} {}'.format(ippi, code, self.ppitbls[code].name))
                 iCode[code] = ippi  # index of tables by code 
                 
             if (found_tables and words[0].startswith("20")): # a year number
@@ -203,8 +199,6 @@ class PPI:
                     i += 1
                 self.ppitbls[code].add_row(int(words[0]), rvals)
                 iyr += 1
-        
-        print ' '
         
         self.escData['IPPI_BLD'] = Escalator( ['Baseline Blade material costs       ',   ['3272123', '3255204', '332722489', '326150P'], [ 60.00,  23.00,  8.00,   9.00 ]  ] )
         self.escData['IPPI_BLA'] = Escalator( ['Advanced Blade material costs       ',   ['3272123', '3255204', '332722489', '326150P'], [ 61.00,  27.00,  3.00,   9.00 ]  ] )
@@ -261,11 +255,11 @@ class PPI:
         # returns the cost escalator for escData object 'escCode', using reference and current yr/mon values
         
         if (escCode not in self.escData):
-            print "Warning - no such code in PPI '${0:.2f}'".format(escCode)
-            return 0
+            print('Warning - no such code in PPI {0:.2f}'.format(escCode))
+            #return 0
         esc = self.escData[escCode].compute(self.ppitbls,self.ref_yr,self.ref_mon,self.curr_yr,self.curr_mon)
         if (debug > 0):
-            print "Escalator {} from {}{:02} to {}{:02} = {:.4}".format(escCode,self.ref_yr,self.ref_mon,self.curr_yr,self.curr_mon,esc)
+            print('Escalator {} from {}{:02} to {}{:02} = {:.4}'.format(escCode,self.ref_yr,self.ref_mon,self.curr_yr,self.curr_mon,esc))
         return esc
         
 #--------------------------------------------------------------------------------------
@@ -279,12 +273,10 @@ def example():
     ppi = PPI(sy,sm,ey,em)
          
     for i in list(ppi.escData.keys()):
-        print ppi.escData[i].name
-        
+        print(ppi.escData[i].name)    
         # Use ppi.compute(code) to compute ppi for default interval
-        print "%-9s Esc %.4f " % (i, ppi.compute(i))
-        
-        print ' '
+        print('{0:2d} {:.4} '.format(i, ppi.compute(i)))     
+        print(' ' '')
 
 if __name__ == "__main__":
 

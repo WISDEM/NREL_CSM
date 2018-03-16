@@ -1,5 +1,11 @@
-# config.py
-# 2012 01 24
+"""
+config.py
+
+Created by George Scott on 2012-08-01.
+Modified by Katherine Dykes 2012.
+Copyright (c) NREL. All rights reserved.
+"""
+
 """ config file for global variables """
 
 from csmPPI import *
@@ -14,5 +20,3 @@ curr_yr = 2009
 curr_mon =  12
 
 ppi = PPI(ref_yr,ref_mon,curr_yr,curr_mon)
-
-# print 'config.py created ppi'
