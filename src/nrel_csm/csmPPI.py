@@ -127,7 +127,6 @@ class PPI:
         self.debug = debug
 
         fullfile = os.path.join(nrel_csm.__path__[0], self.tblfile)
-        print(self.tblfile)
         try:
             infile = open(fullfile, 'r') #infile = open(self.tblfile)
         except:
