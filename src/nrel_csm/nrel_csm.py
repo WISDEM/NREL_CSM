@@ -7,8 +7,8 @@ Copyright (c) NREL. All rights reserved.
 
 import numpy as np
 from math import pi, gamma, exp
-from utilities import smooth_abs, smooth_min, hstack
-from config import *
+from nrel_csm.utilities import smooth_abs, smooth_min, hstack
+from nrel_csm.config import *
 
 # NREL Cost and Scaling Model plant energy modules
 ##################################################
@@ -189,7 +189,7 @@ def weibull(X,K,L):
     w = (K/L) * ((X/L)**(K-1)) * exp(-((X/L)**K))
     return w
 
-class aep_csm(object):
+class aep_calc_csm(object):
 
     def __init__(self):
 
@@ -303,12 +303,12 @@ class drivetrain_csm(object):
         return self.J
 
 
-class aep_csm_assembly(object):
+class aep_csm(object):
 
     def __init__(self, drivetrain_type='geared'):
         self.aero = aero_csm()
         self.drivetrain = drivetrain_csm(drivetrain_type)
-        self.aep = aep_csm()
+        self.aep = aep_calc_csm()
 
     def compute(self, machine_rating, max_tip_speed, rotor_diameter, max_power_coefficient, opt_tsr,
                 cut_in_wind_speed, cut_out_wind_speed, hub_height, altitude, air_density,
@@ -1519,7 +1519,7 @@ class bos_csm(object):
 # Operational Expenditures
 ################################################## 
 
-class opex_csm_component(object):
+class opex_csm(object):
 
 
     def __init__(self):
@@ -1704,7 +1704,8 @@ class fin_csm(object):
         return self.J
 
 
-if __name__=="__main__":
+'''if __name__=="__main__":
 
 
     ### TODO: Examples
+'''

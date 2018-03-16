@@ -5,7 +5,7 @@ Created by George Scott on 2012-08-01.
 Modified by Katherine Dykes 2012.
 Copyright (c) NREL. All rights reserved.
 """
-#import commonse
+import nrel_csm
 import os
 import sys
 import re
@@ -126,7 +126,8 @@ class PPI:
         self.curr_mon = curr_mon
         self.debug = debug
 
-        fullfile = self.tblfile #os.path.join(commonse.__path__[0], self.tblfile)
+        fullfile = os.path.join(nrel_csm.__path__[0], self.tblfile)
+        print(self.tblfile)
         try:
             infile = open(fullfile, 'r') #infile = open(self.tblfile)
         except:
