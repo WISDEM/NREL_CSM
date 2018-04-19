@@ -8,7 +8,7 @@ setup(
     author='G. Scott and K. Dykes',
     author_email='systems.engineering@nrel.gov',
     #packages= find_packages(),
-    packages=['nrel_csm', 'nrel_csm.static'],
+    packages=['nrelcsm', 'nrelcsm.static'],
     package_data={'':['*.txt']},
     include_package_data = True,
     package_dir={'': 'src'},

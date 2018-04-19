@@ -7,8 +7,8 @@ Copyright (c) NREL. All rights reserved.
 
 import numpy as np
 from math import pi, gamma, exp
-from nrel_csm.utilities import smooth_abs, smooth_min, hstack
-from nrel_csm.config import *
+from nrelcsm.utilities import smooth_abs, smooth_min, hstack
+from nrelcsm.config import *
 
 # NREL Cost and Scaling Model plant energy modules
 ##################################################
