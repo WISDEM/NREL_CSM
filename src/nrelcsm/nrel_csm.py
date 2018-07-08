@@ -128,8 +128,8 @@ class aero_csm(object):
         # determine power curve after losses
         mtp = [None] * n
         for i in range(0,n):
-           mtp[i] = itp[i] #* self.drivetrain.getDrivetrainEfficiency(itp[i],self.ratedHubPower)
-           #print [Wind[i],itp[i],self.drivetrain.getDrivetrainEfficiency(itp[i],self.ratedHubPower),mtp[i]] # for testing
+           mtp[i] = itp[i] #* self.drivetrain.getdrivetrain_efficiency(itp[i],self.ratedHubPower)
+           #print [Wind[i],itp[i],self.drivetrain.getdrivetrain_efficiency(itp[i],self.ratedHubPower),mtp[i]] # for testing
            if (mtp[i] > self.ratedPower):
               if not ratedWSflag:
                 ratedWSflag = True
